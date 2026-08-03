@@ -588,7 +588,7 @@
   </programme>
   <programme start="20260803140000 +0000" stop="20260803150000 +0000" channel="cg_hbohd">
     <title lang="en">House Of The Dragon S3</title>
-    <desc lang="en">Based on George R.R. Martin’s “Fire &amp; Blood,” the series, set 200 years before the events of “Game of Thrones,” tells the story of House Targaryen.</desc>
+    <desc lang="en">Torn between Mysaria and Daemon’s visions for her reign, Rhaenyra grows desperate for a sign that she will prevail.</desc>
   </programme>
   <programme start="20260803150000 +0000" stop="20260803171500 +0000" channel="cg_hbohd">
     <title lang="en">The Conjuring: Last Rites</title>
@@ -2994,19 +2994,19 @@ An international team of reporters will follow the guidance of Occam&apos;s Razo
   <programme start="20260802150000 +0000" stop="20260802183000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 1000: Omnium Banque Nationale presente par Rogers Day 1</title>
   </programme>
-  <programme start="20260802183000 +0000" stop="20260802210000 +0000" channel="cg_ps_hd1">
-    <title lang="en">ATP 500: Mubadala Citi DC Open Finals</title>
-  </programme>
-  <programme start="20260802210000 +0000" stop="20260803030000 +0000" channel="cg_ps_hd1">
+  <programme start="20260802160000 +0000" stop="20260802183000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 1000: Omnium Banque Nationale presente par Rogers Day 1</title>
   </programme>
-  <programme start="20260803030000 +0000" stop="20260803130000 +0000" channel="cg_ps_hd1">
-    <title lang="en">ATP 1000: Omnium Banque Nationale presente par Rogers Day 1</title>
-  </programme>
-  <programme start="20260803130000 +0000" stop="20260803150000 +0000" channel="cg_ps_hd1">
+  <programme start="20260802183000 +0000" stop="20260802203000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 500: Mubadala Citi DC Open Finals</title>
   </programme>
-  <programme start="20260803150000 +0000" stop="20260804030000 +0000" channel="cg_ps_hd1">
+  <programme start="20260802203000 +0000" stop="20260803030000 +0000" channel="cg_ps_hd1">
+    <title lang="en">ATP 1000: Omnium Banque Nationale presente par Rogers Day 1</title>
+  </programme>
+  <programme start="20260803030000 +0000" stop="20260803150000 +0000" channel="cg_ps_hd1">
+    <title lang="en">ATP 1000: Omnium Banque Nationale presente par Rogers Day 1</title>
+  </programme>
+  <programme start="20260803150000 +0000" stop="20260803160000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 1000: Omnium Banque Nationale presente par Rogers Day 2</title>
   </programme>
   <programme start="20260802145500 +0000" stop="20260802164000 +0000" channel="dr_rockextreme">
@@ -4927,11 +4927,8 @@ An international team of reporters will follow the guidance of Occam&apos;s Razo
   <programme start="20260803100000 +0000" stop="20260803140000 +0000" channel="premiersports2hd">
     <title lang="en">LPGA Tour: ISPS HANDA Women&apos;s Scottish Open Day 4</title>
   </programme>
-  <programme start="20260803140000 +0000" stop="20260803153000 +0000" channel="premiersports2hd">
+  <programme start="20260803140000 +0000" stop="20260803160000 +0000" channel="premiersports2hd">
     <title lang="en">WTA All Access 2026 </title>
-  </programme>
-  <programme start="20260803153000 +0000" stop="20260803160000 +0000" channel="premiersports2hd">
-    <title lang="en">Wanda Diamond League Highlights: Eugene</title>
   </programme>
   <programme start="20260802160000 +0000" stop="20260802163000 +0000" channel="hits_hd1">
     <title lang="en">Frasier S6 E17 - The Dinner Party</title>
