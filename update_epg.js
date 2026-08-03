@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 async function generateEPG() {
-  // Dynamically calculate the dates for today
   const now = new Date();
   const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
   const start = yesterday.toISOString().split('T')[0] + 'T16:00:00Z';
@@ -18,7 +17,6 @@ async function generateEPG() {
     let channelXml = "";
     let programXml = "";
 
-    // Deep scan algorithm to find schedules
     let rawPrograms = [];
     function findAirings(obj) {
       if (!obj || typeof obj !== 'object') return;
@@ -57,15 +55,20 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      const titleObj = (p.lod && p.lod[0]) || {};
-      const title = titleObj.n || p.title || "No Title";
-      const desc = titleObj.d || p.description || "";
+      // Look through all potential title locations used by this API layout
+      const lonObj = (p.lon && p.lon[0]) || {};
+      const lodObj = (p.lod && p.lod[0]) || {};
+      const title = p.title || lonObj.n || lodObj.n || p.name || "Regular Programming";
+      const desc = lodObj.d || p.description || "";
+
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
 
       if (startTime && endTime) {
-        const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0800";
-        const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0800";
+        // Keeps the native time structure clean so players can map it to your local system clock
+        const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
+        const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
+        
         programXml += `  <programme start="${startClean}" stop="${endClean}" channel="${chId}">\n`;
         programXml += `    <title lang="en">${escapeXml(title)}</title>\n`;
         if (desc) programXml += `    <desc lang="en">${escapeXml(desc)}</desc>\n`;
