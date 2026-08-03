@@ -55,11 +55,26 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Exact metadata extraction mapping for the Cignal Play EPG format
-      const lodObj = (p.lod && p.lod[0]) || {};
-      const lonObj = (p.lon && p.lon[0]) || {};
-      const title = lodObj.n || lonObj.n || p.title || p.name || "Regular Programming";
-      const desc = lodObj.d || lonObj.d || p.description || "";
+      // Explicitly check inside lon and lod arrays for the program titles
+      let title = "Regular Programming";
+      if (p.lon && Array.isArray(p.lon) && p.lon[0] && p.lon[0].n) {
+        title = p.lon[0].n;
+      } else if (p.lod && Array.isArray(p.lod) && p.lod[0] && p.lod[0].n) {
+        title = p.lod[0].n;
+      } else if (p.title) {
+        title = p.title;
+      } else if (p.name) {
+        title = p.name;
+      }
+
+      let desc = "";
+      if (p.lod && Array.isArray(p.lod) && p.lod[0] && p.lod[0].d) {
+        desc = p.lod[0].d;
+      } else if (p.lon && Array.isArray(p.lon) && p.lon[0] && p.lon[0].d) {
+        desc = p.lon[0].d;
+      } else if (p.description) {
+        desc = p.description;
+      }
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
