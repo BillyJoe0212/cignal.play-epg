@@ -63,13 +63,18 @@ async function generateEPG() {
       const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (p.lon && p.lon[0]) || {};
       const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (p.lod && p.lod[0]) || {};
       
-      let title = lonObj.n || lodObj.n || p.title || pgmObj.title || p.name || pgmObj.name;
-      if (!title || title.trim() === "") {
-        title = "Regular Programming";
-      }
+      // lonObj.n contains the Title ("A Minecraft Movie")
+      let title = lonObj.n || lodObj.n || p.title || pgmObj.title || "Regular Programming";
 
-      // Updated description extraction map matching Cignal's real payload keys
-      let desc = lodObj.d || lonObj.d || lodObj.desc || lonObj.desc || pgmObj.desc || p.description || pgmObj.description || "";
+      // lodObj.n contains the Description summary sentence string
+      let desc = "";
+      if (lonObj.n && lodObj.n && lonObj.n !== lodObj.n) {
+        desc = lodObj.n;
+      } else if (lodObj.d) {
+        desc = lodObj.d;
+      } else if (p.description) {
+        desc = p.description;
+      }
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
