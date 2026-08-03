@@ -2,8 +2,8 @@ name: Update Daily EPG
 
 on:
   schedule:
-    - cron: '0 20 * * *' # Runs automatically every day at 4:00 AM Philippine Time (20:00 UTC)
-  workflow_dispatch: # Allows you to run it manually by clicking a button
+    - cron: '0 20 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-node-version: '20'
+          node-version: '20'
 
       - name: Run EPG Scraper Script
         run: node update_epg.js
