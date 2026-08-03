@@ -55,17 +55,16 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Look through all potential title locations used by this API layout
-      const lonObj = (p.lon && p.lon[0]) || {};
+      // Exact metadata extraction mapping for the Cignal Play EPG format
       const lodObj = (p.lod && p.lod[0]) || {};
-      const title = p.title || lonObj.n || lodObj.n || p.name || "Regular Programming";
-      const desc = lodObj.d || p.description || "";
+      const lonObj = (p.lon && p.lon[0]) || {};
+      const title = lodObj.n || lonObj.n || p.title || p.name || "Regular Programming";
+      const desc = lodObj.d || lonObj.d || p.description || "";
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
 
       if (startTime && endTime) {
-        // Keeps the native time structure clean so players can map it to your local system clock
         const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
         const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
         
