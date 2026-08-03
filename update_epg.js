@@ -2,9 +2,12 @@ const fs = require('fs');
 
 async function generateEPG() {
   const now = new Date();
-  const startStr = now.toISOString().split('T')[0];
+  const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+  const start = yesterday.toISOString().split('T')[0] + 'T16:00:00Z';
+  const end = now.toISOString().split('T')[0] + 'T16:00:00Z';
   
-  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/schedules?date=${startStr}&reg=ph&client=pldt-cignal-web`;
+  // Reverted to the stable working EPG endpoint
+  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
   
   try {
     const res = await fetch(url, {
@@ -24,7 +27,7 @@ async function generateEPG() {
       if (!obj || typeof obj !== 'object') return;
       if (Array.isArray(obj)) {
         obj.forEach(item => {
-          if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch || item.title || item.name)) {
+          if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
             rawPrograms.push(item);
           } else {
             findAirings(item);
@@ -34,7 +37,7 @@ async function generateEPG() {
         for (let key in obj) {
           if (Array.isArray(obj[key]) && obj[key].length > 0) {
             const first = obj[key][0];
-            if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch || first.title || first.name)) {
+            if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
               rawPrograms = rawPrograms.concat(obj[key]);
               continue;
             }
@@ -48,7 +51,6 @@ async function generateEPG() {
 
     rawPrograms.forEach(p => {
       if (!p || typeof p !== 'object') return;
-      
       const chObj = p.ch || {};
       const chId = chObj.cs || p.channelId || "unknown_channel";
       const chName = chObj.n || p.channelName || chId;
@@ -58,20 +60,33 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Deep title text retrieval fallback map
-      const lonObj = (p.lon && p.lon[0]) || {};
-      const lodObj = (p.lod && p.lod[0]) || {};
-      const pgmObj = p.program || p.pgm || {};
-      const pgmExLon = (pgmObj.lon && pgmObj.lon[0]) || {};
-      const pgmExLod = (pgmObj.lod && pgmObj.lod[0]) || {};
+      // Exhaustive nested lookup to catch title text strings anywhere in the data payload
+      let title = "";
+      if (p.title && typeof p.title === 'string') title = p.title;
+      else if (p.name && typeof p.name === 'string') title = p.name;
+      else if (p.lon && p.lon[0] && p.lon[0].n) title = p.lon[0].n;
+      else if (p.lod && p.lod[0] && p.lod[0].n) title = p.lod[0].n;
+      else if (p.program && p.program.title) title = p.program.title;
+      else if (p.program && p.program.name) title = p.program.name;
+      else if (p.program && p.program.lon && p.program.lon[0] && p.program.lon[0].n) title = p.program.lon[0].n;
+      else if (p.program && p.program.lod && p.program.lod[0] && p.program.lod[0].n) title = p.program.lod[0].n;
+      
+      // If nothing is found at all, fall back to channel name so it's never blank or generic
+      if (!title || title.trim() === "") {
+        title = chName + " Program";
+      }
 
-      let title = lonObj.n || lodObj.n || pgmExLon.n || pgmExLod.n || p.title || pgmObj.title || p.name || pgmObj.name || "Live Program";
-      let desc = lodObj.d || lonObj.d || pgmExLod.d || pgmExLon.d || p.description || pgmObj.description || "";
+      let desc = "";
+      if (p.description) desc = p.description;
+      else if (p.lod && p.lod[0] && p.lod[0].d) desc = p.lod[0].d;
+      else if (p.lon && p.lon[0] && p.lon[0].d) desc = p.lon[0].d;
+      else if (p.program && p.program.description) desc = p.program.description;
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
 
       if (startTime && endTime) {
+        // Keeps time block mapping untouched since it worked cleanly originally
         const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
         const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
         
