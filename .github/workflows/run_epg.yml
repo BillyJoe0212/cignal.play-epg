@@ -1,0 +1,31 @@
+name: Update Daily EPG
+
+on:
+  schedule:
+    - cron: '0 20 * * *' # Runs automatically every day at 4:00 AM Philippine Time (20:00 UTC)
+  workflow_dispatch: # Allows you to run it manually by clicking a button
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: '20'
+
+      - name: Run EPG Scraper Script
+        run: node update_epg.js
+
+      - name: Commit and Push Updated XMLTV File
+        run: |
+          git config --global user.name "EPG Bot"
+          git config --global user.email "bot@github.com"
+          git add cignal.xml
+          git commit -m "Daily EPG Auto-Update" || exit 0
+          git push
