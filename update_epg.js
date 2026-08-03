@@ -6,7 +6,6 @@ async function generateEPG() {
   const start = yesterday.toISOString().split('T')[0] + 'T16:00:00Z';
   const end = now.toISOString().split('T')[0] + 'T16:00:00Z';
   
-  // Reverted to the stable working EPG endpoint
   const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
   
   try {
@@ -60,33 +59,33 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Exhaustive nested lookup to catch title text strings anywhere in the data payload
+      // Target the nested localized arrays directly
       let title = "";
-      if (p.title && typeof p.title === 'string') title = p.title;
-      else if (p.name && typeof p.name === 'string') title = p.name;
-      else if (p.lon && p.lon[0] && p.lon[0].n) title = p.lon[0].n;
-      else if (p.lod && p.lod[0] && p.lod[0].n) title = p.lod[0].n;
-      else if (p.program && p.program.title) title = p.program.title;
-      else if (p.program && p.program.name) title = p.program.name;
-      else if (p.program && p.program.lon && p.program.lon[0] && p.program.lon[0].n) title = p.program.lon[0].n;
-      else if (p.program && p.program.lod && p.program.lod[0] && p.program.lod[0].n) title = p.program.lod[0].n;
-      
-      // If nothing is found at all, fall back to channel name so it's never blank or generic
-      if (!title || title.trim() === "") {
-        title = chName + " Program";
+      if (p.lon && p.lon[0] && p.lon[0].n) {
+        title = p.lon[0].n;
+      } else if (p.lod && p.lod[0] && p.lod[0].n) {
+        title = p.lod[0].n;
+      } else if (typeof p.title === 'string' && p.title.trim() !== "") {
+        title = p.title;
+      } else if (typeof p.name === 'string' && p.name.trim() !== "") {
+        title = p.name;
+      } else {
+        title = "Regular Programming";
       }
 
       let desc = "";
-      if (p.description) desc = p.description;
-      else if (p.lod && p.lod[0] && p.lod[0].d) desc = p.lod[0].d;
-      else if (p.lon && p.lon[0] && p.lon[0].d) desc = p.lon[0].d;
-      else if (p.program && p.program.description) desc = p.program.description;
+      if (p.lod && p.lod[0] && p.lod[0].d) {
+        desc = p.lod[0].d;
+      } else if (p.lon && p.lon[0] && p.lon[0].d) {
+        desc = p.lon[0].d;
+      } else if (p.description) {
+        desc = p.description;
+      }
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
 
       if (startTime && endTime) {
-        // Keeps time block mapping untouched since it worked cleanly originally
         const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
         const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
         
