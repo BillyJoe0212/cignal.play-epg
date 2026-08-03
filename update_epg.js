@@ -64,8 +64,8 @@ async function generateEPG() {
       const endTime = p.sc_ed_dt || p.endTime || p.end;
 
       if (startTime && endTime) {
-        const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
-        const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
+        const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0800";
+        const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0800";
         programXml += `  <programme start="${startClean}" stop="${endClean}" channel="${chId}">\n`;
         programXml += `    <title lang="en">${escapeXml(title)}</title>\n`;
         if (desc) programXml += `    <desc lang="en">${escapeXml(desc)}</desc>\n`;
