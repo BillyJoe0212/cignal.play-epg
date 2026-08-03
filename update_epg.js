@@ -59,18 +59,17 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Extracts details out of the nested pgm layer object structure
       const pgmObj = p.pgm || {};
       const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (p.lon && p.lon[0]) || {};
       const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (p.lod && p.lod[0]) || {};
       
       let title = lonObj.n || lodObj.n || p.title || pgmObj.title || p.name || pgmObj.name;
-      
       if (!title || title.trim() === "") {
         title = "Regular Programming";
       }
 
-      let desc = lodObj.d || lonObj.d || p.description || pgmObj.description || "";
+      // Updated description extraction map matching Cignal's real payload keys
+      let desc = lodObj.d || lonObj.d || lodObj.desc || lonObj.desc || pgmObj.desc || p.description || pgmObj.description || "";
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
@@ -81,7 +80,9 @@ async function generateEPG() {
         
         programXml += `  <programme start="${startClean}" stop="${endClean}" channel="${chId}">\n`;
         programXml += `    <title lang="en">${escapeXml(title)}</title>\n`;
-        if (desc) programXml += `    <desc lang="en">${escapeXml(desc)}</desc>\n`;
+        if (desc && desc.trim() !== "") {
+          programXml += `    <desc lang="en">${escapeXml(desc)}</desc>\n`;
+        }
         programXml += `  </programme>\n`;
       }
     });
