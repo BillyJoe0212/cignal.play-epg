@@ -2,14 +2,18 @@ const fs = require('fs');
 
 async function generateEPG() {
   const now = new Date();
-  const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  const start = yesterday.toISOString().split('T')[0] + 'T16:00:00Z';
-  const end = now.toISOString().split('T')[0] + 'T16:00:00Z';
+  const startStr = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
   
-  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
+  // Directly targets the primary schedule layout route
+  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/schedules?date=${startStr}&reg=ph&client=pldt-cignal-web`;
   
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json'
+      }
+    });
     const data = await res.json();
     
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
@@ -22,7 +26,7 @@ async function generateEPG() {
       if (!obj || typeof obj !== 'object') return;
       if (Array.isArray(obj)) {
         obj.forEach(item => {
-          if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
+          if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch || item.program)) {
             rawPrograms.push(item);
           } else {
             findAirings(item);
@@ -32,7 +36,7 @@ async function generateEPG() {
         for (let key in obj) {
           if (Array.isArray(obj[key]) && obj[key].length > 0) {
             const first = obj[key][0];
-            if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
+            if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch || first.program)) {
               rawPrograms = rawPrograms.concat(obj[key]);
               continue;
             }
@@ -46,6 +50,7 @@ async function generateEPG() {
 
     rawPrograms.forEach(p => {
       if (!p || typeof p !== 'object') return;
+      
       const chObj = p.ch || {};
       const chId = chObj.cs || p.channelId || "unknown_channel";
       const chName = chObj.n || p.channelName || chId;
@@ -55,26 +60,17 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Explicitly check inside lon and lod arrays for the program titles
-      let title = "Regular Programming";
-      if (p.lon && Array.isArray(p.lon) && p.lon[0] && p.lon[0].n) {
-        title = p.lon[0].n;
-      } else if (p.lod && Array.isArray(p.lod) && p.lod[0] && p.lod[0].n) {
-        title = p.lod[0].n;
-      } else if (p.title) {
-        title = p.title;
-      } else if (p.name) {
-        title = p.name;
+      // Safe multi-tier fallback checks for schedules/programs structures
+      const pgmObj = p.program || p.pgm || {};
+      const lonObj = (p.lon && p.lon[0]) || (pgmObj.lon && pgmObj.lon[0]) || {};
+      const lodObj = (p.lod && p.lod[0]) || (pgmObj.lod && pgmObj.lod[0]) || {};
+      
+      let title = lonObj.n || lodObj.n || p.title || pgmObj.title || p.name || pgmObj.name;
+      if (!title || title.trim() === "") {
+        title = "Live Program";
       }
 
-      let desc = "";
-      if (p.lod && Array.isArray(p.lod) && p.lod[0] && p.lod[0].d) {
-        desc = p.lod[0].d;
-      } else if (p.lon && Array.isArray(p.lon) && p.lon[0] && p.lon[0].d) {
-        desc = p.lon[0].d;
-      } else if (p.description) {
-        desc = p.description;
-      }
+      let desc = lodObj.d || lonObj.d || p.description || pgmObj.description || "";
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
