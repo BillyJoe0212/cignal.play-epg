@@ -59,28 +59,18 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Target the nested localized arrays directly
-      let title = "";
-      if (p.lon && p.lon[0] && p.lon[0].n) {
-        title = p.lon[0].n;
-      } else if (p.lod && p.lod[0] && p.lod[0].n) {
-        title = p.lod[0].n;
-      } else if (typeof p.title === 'string' && p.title.trim() !== "") {
-        title = p.title;
-      } else if (typeof p.name === 'string' && p.name.trim() !== "") {
-        title = p.name;
-      } else {
+      // Extracts details out of the nested pgm layer object structure
+      const pgmObj = p.pgm || {};
+      const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (p.lon && p.lon[0]) || {};
+      const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (p.lod && p.lod[0]) || {};
+      
+      let title = lonObj.n || lodObj.n || p.title || pgmObj.title || p.name || pgmObj.name;
+      
+      if (!title || title.trim() === "") {
         title = "Regular Programming";
       }
 
-      let desc = "";
-      if (p.lod && p.lod[0] && p.lod[0].d) {
-        desc = p.lod[0].d;
-      } else if (p.lon && p.lon[0] && p.lon[0].d) {
-        desc = p.lon[0].d;
-      } else if (p.description) {
-        desc = p.description;
-      }
+      let desc = lodObj.d || lonObj.d || p.description || pgmObj.description || "";
 
       const startTime = p.sc_st_dt || p.startTime || p.start;
       const endTime = p.sc_ed_dt || p.endTime || p.end;
