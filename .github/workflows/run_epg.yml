@@ -2,30 +2,35 @@ name: Update Daily EPG
 
 on:
   schedule:
-    - cron: '0 20 * * *'
-  workflow_dispatch:
+    # Runs automatically every day at 00:00 UTC (8:00 AM Manila Time)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Keeps the manual "Run workflow" button active
+
+permissions:
+  contents: write # Grants permission to push the updated cignal.xml back to the repo
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '18'
 
-      - name: Run EPG Scraper Script
+      - name: Run EPG Generator Script
         run: node update_epg.js
 
-      - name: Commit and Push Updated XMLTV File
+      - name: Commit and Push Updated EPG File
         run: |
-          git config --global user.name "EPG Bot"
-          git config --global user.email "bot@github.com"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add cignal.xml
-          git commit -m "Daily EPG Auto-Update" || exit 0
+          git diff-index --quiet HEAD || git commit -m "Auto-update EPG [skip ci]"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
