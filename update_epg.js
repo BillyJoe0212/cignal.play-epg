@@ -2,14 +2,22 @@ const fs = require('fs');
 
 async function generateEPG() {
   const now = new Date();
-  // Set start time to yesterday evening to cover current live broadcasts
-  const startObj = new Date(now.getTime() - (12 * 60 * 60 * 1000));
-  // Set end time to 36 hours into the future so OTT Navigator always has ahead-data
-  const endObj = new Date(now.getTime() + (36 * 60 * 60 * 1000));
-
-  const start = startObj.toISOString().split('T')[0] + 'T00:00:00Z';
-  const end = endObj.toISOString().split('T')[0] + 'T23:59:59Z';
   
+  // Format dates explicitly in Asia/Manila timezone (YYYY-MM-DD)
+  const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-CA', options); // 'en-CA' gives YYYY-MM-DD format
+  
+  // Get Today and Tomorrow in Manila local dates
+  const todayStr = formatter.format(now);
+  const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+  const tomorrowStr = formatter.format(tomorrowObj);
+
+  // Set range from Today 00:00 to Tomorrow 23:59 Manila time
+  const start = `${todayStr}T00:00:00Z`;
+  const end = `${tomorrowStr}T23:59:59Z`;
+  
+  console.log(`Fetching EPG for range: ${start} to ${end}`);
+
   const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
   
   try {
