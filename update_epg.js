@@ -2,9 +2,13 @@ const fs = require('fs');
 
 async function generateEPG() {
   const now = new Date();
-  const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  const start = yesterday.toISOString().split('T')[0] + 'T16:00:00Z';
-  const end = now.toISOString().split('T')[0] + 'T16:00:00Z';
+  // Set start time to yesterday evening to cover current live broadcasts
+  const startObj = new Date(now.getTime() - (12 * 60 * 60 * 1000));
+  // Set end time to 36 hours into the future so OTT Navigator always has ahead-data
+  const endObj = new Date(now.getTime() + (36 * 60 * 60 * 1000));
+
+  const start = startObj.toISOString().split('T')[0] + 'T00:00:00Z';
+  const end = endObj.toISOString().split('T')[0] + 'T23:59:59Z';
   
   const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
   
@@ -63,10 +67,8 @@ async function generateEPG() {
       const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (p.lon && p.lon[0]) || {};
       const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (p.lod && p.lod[0]) || {};
       
-      // lonObj.n contains the Title ("A Minecraft Movie")
       let title = lonObj.n || lodObj.n || p.title || pgmObj.title || "Regular Programming";
 
-      // lodObj.n contains the Description summary sentence string
       let desc = "";
       if (lonObj.n && lodObj.n && lonObj.n !== lodObj.n) {
         desc = lodObj.n;
