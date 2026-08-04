@@ -2,12 +2,12 @@ name: Update Daily EPG
 
 on:
   schedule:
-    # Runs automatically every day at 00:00 UTC (8:00 AM Manila Time)
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Keeps the manual "Run workflow" button active
+    # Runs at 16:00 UTC = 12:00 AM (Midnight) Manila Time
+    - cron: '0 16 * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: write # Grants permission to push the updated cignal.xml back to the repo
+  contents: write
 
 jobs:
   build:
