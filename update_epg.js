@@ -11,56 +11,70 @@ async function generateEPG() {
   const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
   const tomorrowStr = formatter.format(tomorrowObj);
 
-  // UTC query bounds matching Manila calendar dates
   const start = `${todayStr}T00:00:00Z`;
   const end = `${tomorrowStr}T23:59:59Z`;
   
   console.log(`Fetching full EPG for range: ${start} to ${end}`);
 
-  // Set pageSize to 5000 to pull all channel schedules at once
-  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=5000`;
-  
+  let allPrograms = [];
+  let page = 1;
+  const pageSize = 100;
+  let maxPages = 15; // Fetches up to 1500 items safely
+
   try {
-    const res = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    while (page <= maxPages) {
+      const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=${pageSize}`;
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+      });
+      
+      if (!res.ok) break;
+      const data = await res.json();
+      
+      let pagePrograms = [];
+      function findAirings(obj) {
+        if (!obj || typeof obj !== 'object') return;
+        if (Array.isArray(obj)) {
+          obj.forEach(item => {
+            if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
+              pagePrograms.push(item);
+            } else {
+              findAirings(item);
+            }
+          });
+        } else {
+          for (let key in obj) {
+            if (Array.isArray(obj[key]) && obj[key].length > 0) {
+              const first = obj[key][0];
+              if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
+                pagePrograms = pagePrograms.concat(obj[key]);
+                continue;
+              }
+            }
+            findAirings(obj[key]);
+          }
+        }
       }
-    });
-    const data = await res.json();
-    
+
+      findAirings(data);
+      if (pagePrograms.length === 0) break; // Stop looping when no more data returned
+
+      allPrograms = allPrograms.concat(pagePrograms);
+      page++;
+    }
+
+    if (allPrograms.length === 0) {
+      throw new Error("No schedule entries retrieved from Cignal API.");
+    }
+
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
     const uniqueChannels = new Set();
     let channelXml = "";
     let programXml = "";
 
-    let rawPrograms = [];
-    function findAirings(obj) {
-      if (!obj || typeof obj !== 'object') return;
-      if (Array.isArray(obj)) {
-        obj.forEach(item => {
-          if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
-            rawPrograms.push(item);
-          } else {
-            findAirings(item);
-          }
-        });
-      } else {
-        for (let key in obj) {
-          if (Array.isArray(obj[key]) && obj[key].length > 0) {
-            const first = obj[key][0];
-            if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
-              rawPrograms = rawPrograms.concat(obj[key]);
-              continue;
-            }
-          }
-          findAirings(obj[key]);
-        }
-      }
-    }
-    
-    findAirings(data);
-
-    rawPrograms.forEach(p => {
+    allPrograms.forEach(p => {
       if (!p || typeof p !== 'object') return;
       const chObj = p.ch || {};
       const chId = chObj.cs || p.channelId || "unknown_channel";
@@ -104,7 +118,7 @@ async function generateEPG() {
 
     xml += channelXml + programXml + `</tv>`;
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Successfully generated cignal.xml with ${rawPrograms.length} programs across ${uniqueChannels.size} channels.`);
+    console.log(`Successfully generated cignal.xml with ${allPrograms.length} programs across ${uniqueChannels.size} channels.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
