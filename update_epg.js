@@ -30,14 +30,10 @@ async function generateEPG() {
         }
       });
 
-      if (!res.ok) {
-        console.error(`Page ${page} failed with status: ${res.status}`);
-        break;
-      }
+      if (!res.ok) break;
 
       const data = await res.json();
       
-      // Target the data array directly from Cignal's FirstLight schema
       let items = [];
       if (data && data.data && Array.isArray(data.data)) {
         items = data.data;
@@ -63,7 +59,6 @@ async function generateEPG() {
     allAirings.forEach(item => {
       if (!item) return;
       
-      // Extract channel details
       const chObj = item.ch || item.channel || {};
       const chId = chObj.cs || item.channelId || chObj.id || "unknown_channel";
       const chName = chObj.n || item.channelName || chObj.name || chId;
@@ -73,7 +68,6 @@ async function generateEPG() {
         channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      // Extract title and description
       const pgmObj = item.pgm || item.program || {};
       const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (item.lon && item.lon[0]) || {};
       const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (item.lod && item.lod[0]) || {};
@@ -85,8 +79,12 @@ async function generateEPG() {
       const endTime = item.sc_ed_dt || item.endTime || item.end;
 
       if (startTime && endTime) {
-        const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
-        const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
+        // Convert UTC ISO dates into Manila Local Time (+8 Hours) for the XML format
+        const sDate = new Date(new Date(startTime).getTime() + (8 * 60 * 60 * 1000));
+        const eDate = new Date(new Date(endTime).getTime() + (8 * 60 * 60 * 1000));
+
+        const startClean = sDate.toISOString().replace(/[-:TZ.]/g, '').substring(0, 14) + " +0800";
+        const endClean = eDate.toISOString().replace(/[-:TZ.]/g, '').substring(0, 14) + " +0800";
 
         programXml += `  <programme start="${startClean}" stop="${endClean}" channel="${chId}">\n`;
         programXml += `    <title lang="en">${escapeXml(title)}</title>\n`;
@@ -99,7 +97,7 @@ async function generateEPG() {
 
     xml += channelXml + programXml + `</tv>`;
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Success: Generated cignal.xml with ${allAirings.length} programs across ${uniqueChannels.size} channels.`);
+    console.log(`Success: Generated cignal.xml with local Manila timestamps.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
