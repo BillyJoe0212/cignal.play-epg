@@ -3,70 +3,67 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Format dates explicitly in Asia/Manila timezone (YYYY-MM-DD)
-  const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
-  const formatter = new Intl.DateTimeFormat('en-CA', options);
-  
-  const todayStr = formatter.format(now);
-  const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-  const tomorrowStr = formatter.format(tomorrowObj);
+  // Calculate today and tomorrow bounds in local/UTC format
+  const startStr = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().split('.')[0] + 'Z';
+  const endStr = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2).toISOString().split('.')[0] + 'Z';
 
-  const start = `${todayStr}T00:00:00Z`;
-  const end = `${tomorrowStr}T23:59:59Z`;
-  
-  console.log(`Fetching full EPG for range: ${start} to ${end}`);
+  console.log(`Requesting EPG between ${startStr} and ${endStr}`);
 
-  let allPrograms = [];
+  let rawPrograms = [];
   let page = 1;
-  const pageSize = 100;
-  let maxPages = 15; // Fetches up to 1500 items safely
 
   try {
-    while (page <= maxPages) {
-      const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=${pageSize}`;
+    while (page <= 10) {
+      const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${startStr}&end=${endStr}&reg=ph&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
+      
       const res = await fetch(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json'
         }
       });
-      
-      if (!res.ok) break;
+
+      if (!res.ok) {
+        console.log(`Page ${page} returned HTTP status ${res.status}`);
+        break;
+      }
+
       const data = await res.json();
       
-      let pagePrograms = [];
-      function findAirings(obj) {
+      let pageItems = [];
+      function extractAirings(obj) {
         if (!obj || typeof obj !== 'object') return;
         if (Array.isArray(obj)) {
           obj.forEach(item => {
             if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
-              pagePrograms.push(item);
+              pageItems.push(item);
             } else {
-              findAirings(item);
+              extractAirings(item);
             }
           });
         } else {
-          for (let key in obj) {
-            if (Array.isArray(obj[key]) && obj[key].length > 0) {
-              const first = obj[key][0];
+          for (let k in obj) {
+            if (Array.isArray(obj[k]) && obj[k].length > 0) {
+              const first = obj[k][0];
               if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
-                pagePrograms = pagePrograms.concat(obj[key]);
+                pageItems = pageItems.concat(obj[k]);
                 continue;
               }
             }
-            findAirings(obj[key]);
+            extractAirings(obj[k]);
           }
         }
       }
 
-      findAirings(data);
-      if (pagePrograms.length === 0) break; // Stop looping when no more data returned
+      extractAirings(data);
 
-      allPrograms = allPrograms.concat(pagePrograms);
+      if (pageItems.length === 0) break;
+      rawPrograms = rawPrograms.concat(pageItems);
       page++;
     }
 
-    if (allPrograms.length === 0) {
-      throw new Error("No schedule entries retrieved from Cignal API.");
+    if (rawPrograms.length === 0) {
+      throw new Error("API returned no program data.");
     }
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
@@ -74,7 +71,7 @@ async function generateEPG() {
     let channelXml = "";
     let programXml = "";
 
-    allPrograms.forEach(p => {
+    rawPrograms.forEach(p => {
       if (!p || typeof p !== 'object') return;
       const chObj = p.ch || {};
       const chId = chObj.cs || p.channelId || "unknown_channel";
@@ -118,7 +115,7 @@ async function generateEPG() {
 
     xml += channelXml + programXml + `</tv>`;
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Successfully generated cignal.xml with ${allPrograms.length} programs across ${uniqueChannels.size} channels.`);
+    console.log(`Success! ${uniqueChannels.size} channels and ${rawPrograms.length} programs generated.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
