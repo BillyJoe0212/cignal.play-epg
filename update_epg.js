@@ -3,122 +3,108 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Define query bounds for yesterday, today, and tomorrow in UTC ISO format
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1)).toISOString().split('.')[0] + 'Z';
-  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 2)).toISOString().split('.')[0] + 'Z';
+  // Format dates explicitly in Asia/Manila timezone (YYYY-MM-DD)
+  const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-CA', options); // 'en-CA' gives YYYY-MM-DD format
+  
+  // Get Today and Tomorrow in Manila local dates
+  const todayStr = formatter.format(now);
+  const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+  const tomorrowStr = formatter.format(tomorrowObj);
 
-  console.log(`Fetching schedule between ${start} and ${end}...`);
+  // Set range from Today 00:00 to Tomorrow 23:59 Manila time
+  const start = `${todayStr}T00:00:00Z`;
+  const end = `${tomorrowStr}T23:59:59Z`;
+  
+  console.log(`Fetching EPG for range: ${start} to ${end}`);
 
-  let allAirings = [];
-  let page = 1;
-
+  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
+  
   try {
-    while (page <= 10) {
-      const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
-      
-      const res = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'application/json'
-        }
-      });
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+    const data = await res.json();
+    
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
+    const uniqueChannels = new Set();
+    let channelXml = "";
+    let programXml = "";
 
-      if (!res.ok) break;
-
-      const data = await res.json();
-      
-      let pageItems = [];
-      function extractAirings(obj) {
-        if (!obj || typeof obj !== 'object') return;
-        if (Array.isArray(obj)) {
-          obj.forEach(item => {
-            if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
-              pageItems.push(item);
-            } else {
-              extractAirings(item);
-            }
-          });
-        } else {
-          for (let k in obj) {
-            if (Array.isArray(obj[k]) && obj[k].length > 0) {
-              const first = obj[k][0];
-              if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
-                pageItems = pageItems.concat(obj[k]);
-                continue;
-              }
-            }
-            extractAirings(obj[k]);
+    let rawPrograms = [];
+    function findAirings(obj) {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) {
+        obj.forEach(item => {
+          if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
+            rawPrograms.push(item);
+          } else {
+            findAirings(item);
           }
+        });
+      } else {
+        for (let key in obj) {
+          if (Array.isArray(obj[key]) && obj[key].length > 0) {
+            const first = obj[key][0];
+            if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
+              rawPrograms = rawPrograms.concat(obj[key]);
+              continue;
+            }
+          }
+          findAirings(obj[key]);
         }
       }
-
-      extractAirings(data);
-
-      if (pageItems.length === 0) break;
-      allAirings = allAirings.concat(pageItems);
-      page++;
     }
+    
+    findAirings(data);
 
-    if (allAirings.length === 0) {
-      throw new Error("No schedule entries returned from API.");
-    }
-
-    const channelMap = new Map();
-    const programList = [];
-
-    // Separate Channels and Programs
-    allAirings.forEach(item => {
-      if (!item || typeof item !== 'object') return;
+    rawPrograms.forEach(p => {
+      if (!p || typeof p !== 'object') return;
+      const chObj = p.ch || {};
+      const chId = chObj.cs || p.channelId || "unknown_channel";
+      const chName = chObj.n || p.channelName || chId;
       
-      const chObj = item.ch || item.channel || {};
-      const chId = chObj.cs || item.channelId || chObj.id || "unknown_channel";
-      const chName = chObj.n || item.channelName || chObj.name || chId;
-
-      if (!channelMap.has(chId) && chId !== "unknown_channel") {
-        channelMap.set(chId, chName);
+      if (!uniqueChannels.has(chId)) {
+        uniqueChannels.add(chId);
+        channelXml += `  <channel id="${chId}">\n    <display-name>${escapeXml(chName)}</display-name>\n  </channel>\n`;
       }
 
-      const pgmObj = item.pgm || item.program || {};
-      const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (item.lon && item.lon[0]) || {};
-      const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (item.lod && item.lod[0]) || {};
+      const pgmObj = p.pgm || {};
+      const lonObj = (pgmObj.lon && pgmObj.lon[0]) || (p.lon && p.lon[0]) || {};
+      const lodObj = (pgmObj.lod && pgmObj.lod[0]) || (p.lod && p.lod[0]) || {};
+      
+      let title = lonObj.n || lodObj.n || p.title || pgmObj.title || "Regular Programming";
 
-      let title = lonObj.n || lodObj.n || item.title || pgmObj.title || "Regular Programming";
-      let desc = lodObj.d || pgmObj.desc || item.description || "";
+      let desc = "";
+      if (lonObj.n && lodObj.n && lonObj.n !== lodObj.n) {
+        desc = lodObj.n;
+      } else if (lodObj.d) {
+        desc = lodObj.d;
+      } else if (p.description) {
+        desc = p.description;
+      }
 
-      const startTime = item.sc_st_dt || item.startTime || item.start;
-      const endTime = item.sc_ed_dt || item.endTime || item.end;
+      const startTime = p.sc_st_dt || p.startTime || p.start;
+      const endTime = p.sc_ed_dt || p.endTime || p.end;
 
       if (startTime && endTime) {
-        programList.push({ chId, title, desc, startTime, endTime });
+        const startClean = startTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
+        const endClean = endTime.replace(/[-:TZ]/g, '').substring(0, 14) + " +0000";
+        
+        programXml += `  <programme start="${startClean}" stop="${endClean}" channel="${chId}">\n`;
+        programXml += `    <title lang="en">${escapeXml(title)}</title>\n`;
+        if (desc && desc.trim() !== "") {
+          programXml += `    <desc lang="en">${escapeXml(desc)}</desc>\n`;
+        }
+        programXml += `  </programme>\n`;
       }
     });
 
-    // Build XMLTV Document (All <channel> entries first, then <programme> entries)
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
-
-    channelMap.forEach((name, id) => {
-      xml += `  <channel id="${escapeXml(id)}">\n    <display-name>${escapeXml(name)}</display-name>\n  </channel>\n`;
-    });
-
-    const formatXmlTime = (dateStr) => {
-      const d = new Date(dateStr);
-      const pad = (n) => String(n).padStart(2, '0');
-      return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
-    };
-
-    programList.forEach(p => {
-      xml += `  <programme start="${formatXmlTime(p.startTime)}" stop="${formatXmlTime(p.endTime)}" channel="${escapeXml(p.chId)}">\n`;
-      xml += `    <title lang="en">${escapeXml(p.title)}</title>\n`;
-      if (p.desc && p.desc.trim() !== "") {
-        xml += `    <desc lang="en">${escapeXml(p.desc)}</desc>\n`;
-      }
-      xml += `  </programme>\n`;
-    });
-
-    xml += `</tv>`;
-
+    xml += channelXml + programXml + `</tv>`;
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${programList.length} programs.`);
+    console.log(`Successfully generated cignal.xml for ${uniqueChannels.size} channels.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
@@ -126,8 +112,7 @@ async function generateEPG() {
 }
 
 function escapeXml(unsafe) {
-  if (!unsafe) return '';
-  return unsafe.toString().replace(/[<>&'"]/g, c => {
+  return unsafe.replace(/[<>&'"]/g, c => {
     switch (c) {
       case '<': return '&lt;';
       case '>': return '&gt;';
