@@ -3,7 +3,7 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Date range for yesterday, today, and tomorrow in UTC ISO format
+  // Define query bounds for yesterday, today, and tomorrow in UTC ISO format
   const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1)).toISOString().split('.')[0] + 'Z';
   const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 2)).toISOString().split('.')[0] + 'Z';
 
@@ -27,35 +27,54 @@ async function generateEPG() {
 
       const data = await res.json();
       
-      let items = [];
-      if (data && data.data && Array.isArray(data.data)) {
-        items = data.data;
-      } else if (Array.isArray(data)) {
-        items = data;
+      let pageItems = [];
+      function extractAirings(obj) {
+        if (!obj || typeof obj !== 'object') return;
+        if (Array.isArray(obj)) {
+          obj.forEach(item => {
+            if (item && typeof item === 'object' && (item.sc_st_dt || item.startTime || item.ch)) {
+              pageItems.push(item);
+            } else {
+              extractAirings(item);
+            }
+          });
+        } else {
+          for (let k in obj) {
+            if (Array.isArray(obj[k]) && obj[k].length > 0) {
+              const first = obj[k][0];
+              if (first && typeof first === 'object' && (first.sc_st_dt || first.startTime || first.ch)) {
+                pageItems = pageItems.concat(obj[k]);
+                continue;
+              }
+            }
+            extractAirings(obj[k]);
+          }
+        }
       }
 
-      if (items.length === 0) break;
+      extractAirings(data);
 
-      allAirings = allAirings.concat(items);
+      if (pageItems.length === 0) break;
+      allAirings = allAirings.concat(pageItems);
       page++;
     }
 
     if (allAirings.length === 0) {
-      throw new Error("No schedule data returned from API.");
+      throw new Error("No schedule entries returned from API.");
     }
 
     const channelMap = new Map();
     const programList = [];
 
-    // First Pass: Separate Channels and Programs cleanly
+    // Separate Channels and Programs
     allAirings.forEach(item => {
-      if (!item) return;
+      if (!item || typeof item !== 'object') return;
       
       const chObj = item.ch || item.channel || {};
       const chId = chObj.cs || item.channelId || chObj.id || "unknown_channel";
       const chName = chObj.n || item.channelName || chObj.name || chId;
 
-      if (!channelMap.has(chId)) {
+      if (!channelMap.has(chId) && chId !== "unknown_channel") {
         channelMap.set(chId, chName);
       }
 
@@ -74,22 +93,19 @@ async function generateEPG() {
       }
     });
 
-    // Build Valid XMLTV Document (Channels ALWAYS come before Programmes)
+    // Build XMLTV Document (All <channel> entries first, then <programme> entries)
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
-    // 1. Output ALL Channels
     channelMap.forEach((name, id) => {
       xml += `  <channel id="${escapeXml(id)}">\n    <display-name>${escapeXml(name)}</display-name>\n  </channel>\n`;
     });
 
-    // Helper for XMLTV timestamp formatting
     const formatXmlTime = (dateStr) => {
       const d = new Date(dateStr);
       const pad = (n) => String(n).padStart(2, '0');
       return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
     };
 
-    // 2. Output ALL Programmes
     programList.forEach(p => {
       xml += `  <programme start="${formatXmlTime(p.startTime)}" stop="${formatXmlTime(p.endTime)}" channel="${escapeXml(p.chId)}">\n`;
       xml += `    <title lang="en">${escapeXml(p.title)}</title>\n`;
@@ -102,7 +118,7 @@ async function generateEPG() {
     xml += `</tv>`;
 
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Success: Written ${channelMap.size} channels and ${programList.length} programs to cignal.xml.`);
+    console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${programList.length} programs.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
