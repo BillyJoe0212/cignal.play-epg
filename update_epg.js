@@ -3,18 +3,11 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Format YYYY-MM-DD for today and tomorrow in Manila time
-  const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
-  const formatter = new Intl.DateTimeFormat('en-CA', options);
-  
-  const today = formatter.format(now);
-  const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-  const tomorrow = formatter.format(tomorrowObj);
+  // Define query bounds for today and tomorrow in UTC
+  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1)).toISOString().split('.')[0] + 'Z';
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 2)).toISOString().split('.')[0] + 'Z';
 
-  const start = `${today}T00:00:00Z`;
-  const end = `${tomorrow}T23:59:59Z`;
-
-  console.log(`Fetching schedule from ${start} to ${end}...`);
+  console.log(`Fetching schedule between ${start} and ${end}...`);
 
   let allAirings = [];
   let page = 1;
@@ -48,7 +41,7 @@ async function generateEPG() {
     }
 
     if (allAirings.length === 0) {
-      throw new Error("No entries returned from API.");
+      throw new Error("No schedule data returned from Cignal API.");
     }
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
@@ -79,14 +72,16 @@ async function generateEPG() {
       const endTime = item.sc_ed_dt || item.endTime || item.end;
 
       if (startTime && endTime) {
-        // Convert UTC ISO dates into Manila Local Time (+8 Hours) for the XML format
-        const sDate = new Date(new Date(startTime).getTime() + (8 * 60 * 60 * 1000));
-        const eDate = new Date(new Date(endTime).getTime() + (8 * 60 * 60 * 1000));
+        // Format UTC dates directly into standard XMLTV timestamps (YYYYMMDDHHMMSS +0000)
+        const sDate = new Date(startTime);
+        const eDate = new Date(endTime);
 
-        const startClean = sDate.toISOString().replace(/[-:TZ.]/g, '').substring(0, 14) + " +0800";
-        const endClean = eDate.toISOString().replace(/[-:TZ.]/g, '').substring(0, 14) + " +0800";
+        const formatXmlTime = (d) => {
+          const pad = (n) => String(n).padStart(2, '0');
+          return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
+        };
 
-        programXml += `  <programme start="${startClean}" stop="${endClean}" channel="${chId}">\n`;
+        programXml += `  <programme start="${formatXmlTime(sDate)}" stop="${formatXmlTime(eDate)}" channel="${chId}">\n`;
         programXml += `    <title lang="en">${escapeXml(title)}</title>\n`;
         if (desc && desc.trim() !== "") {
           programXml += `    <desc lang="en">${escapeXml(desc)}</desc>\n`;
@@ -97,7 +92,7 @@ async function generateEPG() {
 
     xml += channelXml + programXml + `</tv>`;
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Success: Generated cignal.xml with local Manila timestamps.`);
+    console.log(`Successfully generated cignal.xml with ${allAirings.length} programs.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
