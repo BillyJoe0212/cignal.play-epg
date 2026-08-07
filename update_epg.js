@@ -3,19 +3,17 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Format dates explicitly in Asia/Manila timezone (YYYY-MM-DD)
+  // Explicitly calculate Today and Tomorrow in Manila local time (YYYY-MM-DD)
   const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
-  const formatter = new Intl.DateTimeFormat('en-CA', options); // 'en-CA' gives YYYY-MM-DD format
+  const formatter = new Intl.DateTimeFormat('en-CA', options);
   
-  // Get Today and Tomorrow in Manila local dates
   const todayStr = formatter.format(now);
   const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
   const tomorrowStr = formatter.format(tomorrowObj);
 
-  // Set range from Today 00:00 to Tomorrow 23:59 Manila time
   const start = `${todayStr}T00:00:00Z`;
   const end = `${tomorrowStr}T23:59:59Z`;
-  
+
   console.log(`Fetching EPG for range: ${start} to ${end}`);
 
   const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
