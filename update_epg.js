@@ -2,43 +2,60 @@ const fs = require('fs');
 
 async function generateEPG() {
   const now = new Date();
+  
+  // Manila UTC+8 offset calculation
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
-  
-  // Exact range from 12:00 AM Manila Time (today) to 4 days ahead
+
+  // Exact bounds: 12:00 AM Midnight Manila Time today up to 4 days ahead
   const startUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
   const endUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate() + 4, 23, 59, 59) - manilaOffset);
 
+  // Format UTC strings
   const start = startUtc.toISOString().split('.')[0] + 'Z';
   const end = endUtc.toISOString().split('.')[0] + 'Z';
 
-  console.log(`Fetching schedule from ${start} to ${end}...`);
+  console.log(`Fetching live EPG from Quickplay (${start} to ${end})...`);
 
   let allChannels = [];
   let page = 1;
 
+  // Paginate through the new Quickplay API
   while (page <= 10) {
-    const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
-    
+    const url = `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${page}&pageSize=100`;
+
     try {
       const res = await fetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'application/json, text/plain, */*'
+          'Accept': 'application/json, text/plain, */*',
+          'Origin': 'https://cignalplay.com',
+          'Referer': 'https://cignalplay.com/'
         }
       });
 
-      if (!res.ok) break;
+      if (!res.ok) {
+        console.log(`Page ${page} returned HTTP ${res.status}. Ending pagination.`);
+        break;
+      }
 
       const json = await res.json();
       const pageData = json.data || [];
+
       if (!Array.isArray(pageData) || pageData.length === 0) break;
 
       allChannels = allChannels.concat(pageData);
+      console.log(`Page ${page}: Retrieved ${pageData.length} channels.`);
       page++;
     } catch (err) {
+      console.error(`Fetch error on page ${page}:`, err.message);
       break;
     }
+  }
+
+  if (allChannels.length === 0) {
+    console.error("Error: Failed to retrieve data from Quickplay API.");
+    process.exit(1);
   }
 
   const channelMap = new Map();
@@ -51,7 +68,7 @@ async function generateEPG() {
   };
 
   allChannels.forEach(chItem => {
-    // Collect all valid IDs present on the channel object
+    // Extract every possible ID variant so playlist mappings match automatically
     const idSet = new Set();
 
     if (chItem.cs) idSet.add(chItem.cs);
@@ -72,7 +89,6 @@ async function generateEPG() {
 
     const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || Array.from(idSet)[0] || "Unknown Channel";
 
-    // Register all discovered IDs in the channel header list
     idSet.forEach(id => {
       if (id && !channelMap.has(id)) {
         channelMap.set(id, chName);
@@ -81,11 +97,11 @@ async function generateEPG() {
 
     if (Array.isArray(chItem.airing)) {
       chItem.airing.forEach(air => {
-        let title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) || 
-                    (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) || 
+        let title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) ||
+                    (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
                     "To Be Announced";
 
-        let desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) || 
+        let desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
                    (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) || "";
 
         const startTime = air.sc_st_dt;
@@ -94,10 +110,9 @@ async function generateEPG() {
         if (startTime && endTime) {
           const isPlaceholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || title.trim() === 'To Be Announced';
 
-          // Emit program entries across all detected ID variants
           idSet.forEach(targetId => {
             const slotKey = `${targetId}_${startTime}`;
-            
+
             if (!programMap.has(slotKey)) {
               programMap.set(slotKey, {
                 chId: targetId,
@@ -128,6 +143,7 @@ async function generateEPG() {
 
   const finalPrograms = Array.from(programMap.values());
 
+  // Build XMLTV output
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
   channelMap.forEach((name, id) => {
@@ -146,7 +162,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Exported ${channelMap.size} channel IDs and ${finalPrograms.length} scheduled programs.`);
+  console.log(`Success: Generated cignal.xml with ${channelMap.size} channel IDs and ${finalPrograms.length} programs.`);
 }
 
 function escapeXml(unsafe) {
