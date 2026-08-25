@@ -215,147 +215,195 @@
   </channel>
   <programme start="20260825000000 +0000" stop="20260825010000 +0000" channel="bilyonaryoch">
     <title lang="en">Memo With Korina</title>
+    <desc lang="en">Memo With Korina</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825020000 +0000" channel="bilyonaryoch">
     <title lang="en">The Spokes</title>
+    <desc lang="en">The Spokes</desc>
   </programme>
   <programme start="20260825020000 +0000" stop="20260825023000 +0000" channel="bilyonaryoch">
     <title lang="en">Business 360</title>
+    <desc lang="en">Business 360</desc>
   </programme>
   <programme start="20260825023000 +0000" stop="20260825030000 +0000" channel="bilyonaryoch">
     <title lang="en">At The Forefront</title>
+    <desc lang="en">At The Forefront</desc>
   </programme>
   <programme start="20260825030000 +0000" stop="20260825040000 +0000" channel="bilyonaryoch">
     <title lang="en">Memo With Korina</title>
+    <desc lang="en">Memo With Korina</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825053000 +0000" channel="bilyonaryoch">
     <title lang="en">The Daily Dish</title>
+    <desc lang="en">The Daily Dish</desc>
   </programme>
   <programme start="20260825053000 +0000" stop="20260825060000 +0000" channel="bilyonaryoch">
     <title lang="en">Midday Report</title>
+    <desc lang="en">Midday Report</desc>
   </programme>
   <programme start="20260825060000 +0000" stop="20260825063000 +0000" channel="bilyonaryoch">
     <title lang="en">Shift Happens</title>
+    <desc lang="en">Shift Happens</desc>
   </programme>
   <programme start="20260825063000 +0000" stop="20260825073000 +0000" channel="bilyonaryoch">
     <title lang="en">The Spokes</title>
+    <desc lang="en">The Spokes</desc>
   </programme>
   <programme start="20260825073000 +0000" stop="20260825080000 +0000" channel="bilyonaryoch">
     <title lang="en">Business 360</title>
+    <desc lang="en">Business 360</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825083000 +0000" channel="bilyonaryoch">
     <title lang="en">Follow The Money</title>
+    <desc lang="en">Follow The Money</desc>
   </programme>
   <programme start="20260825083000 +0000" stop="20260825090000 +0000" channel="bilyonaryoch">
     <title lang="en">At The Forefront</title>
+    <desc lang="en">At The Forefront</desc>
   </programme>
   <programme start="20260825090000 +0000" stop="20260825100000 +0000" channel="bilyonaryoch">
     <title lang="en">Sessions With Brian Yamsuan</title>
+    <desc lang="en">Sessions With Brian Yamsuan</desc>
   </programme>
   <programme start="20260825100000 +0000" stop="20260825113000 +0000" channel="bilyonaryoch">
     <title lang="en">Agenda</title>
+    <desc lang="en">Agenda</desc>
   </programme>
   <programme start="20260825113000 +0000" stop="20260825120000 +0000" channel="bilyonaryoch">
     <title lang="en">On Point</title>
+    <desc lang="en">On Point</desc>
   </programme>
   <programme start="20260825120000 +0000" stop="20260825130000 +0000" channel="bilyonaryoch">
     <title lang="en">What&apos;s The Point</title>
+    <desc lang="en">What&apos;s The Point</desc>
   </programme>
   <programme start="20260825130000 +0000" stop="20260825140000 +0000" channel="bilyonaryoch">
     <title lang="en">Politiko Nightly</title>
+    <desc lang="en">Politiko Nightly</desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825143000 +0000" channel="bilyonaryoch">
     <title lang="en">The Scorecard</title>
+    <desc lang="en">The Scorecard</desc>
   </programme>
   <programme start="20260825143000 +0000" stop="20260825160000 +0000" channel="bilyonaryoch">
     <title lang="en">Agenda</title>
+    <desc lang="en">Agenda</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825163000 +0000" channel="bilyonaryoch">
     <title lang="en">On Point</title>
+    <desc lang="en">On Point</desc>
   </programme>
   <programme start="20260825163000 +0000" stop="20260825170000 +0000" channel="bilyonaryoch">
     <title lang="en">Shift Happens</title>
+    <desc lang="en">Shift Happens</desc>
   </programme>
   <programme start="20260825170000 +0000" stop="20260825173000 +0000" channel="bilyonaryoch">
     <title lang="en">The Scorecard</title>
+    <desc lang="en">The Scorecard</desc>
   </programme>
   <programme start="20260825173000 +0000" stop="20260825180000 +0000" channel="bilyonaryoch">
     <title lang="en">Follow The Money</title>
+    <desc lang="en">Follow The Money</desc>
   </programme>
   <programme start="20260825180000 +0000" stop="20260825190000 +0000" channel="bilyonaryoch">
     <title lang="en">Politiko Nightly</title>
+    <desc lang="en">Politiko Nightly</desc>
   </programme>
   <programme start="20260825190000 +0000" stop="20260825200000 +0000" channel="bilyonaryoch">
     <title lang="en">The Spokes</title>
+    <desc lang="en">The Spokes</desc>
   </programme>
   <programme start="20260825200000 +0000" stop="20260825203000 +0000" channel="bilyonaryoch">
     <title lang="en">Business 360</title>
+    <desc lang="en">Business 360</desc>
   </programme>
   <programme start="20260825203000 +0000" stop="20260825210000 +0000" channel="bilyonaryoch">
     <title lang="en">On Point</title>
+    <desc lang="en">On Point</desc>
   </programme>
   <programme start="20260825210000 +0000" stop="20260825220000 +0000" channel="bilyonaryoch">
     <title lang="en">Sessions With Brian Yamsuan</title>
+    <desc lang="en">Sessions With Brian Yamsuan</desc>
   </programme>
   <programme start="20260825220000 +0000" stop="20260825230000 +0000" channel="bilyonaryoch">
     <title lang="en">The Daily Dish</title>
+    <desc lang="en">The Daily Dish</desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260826000000 +0000" channel="bilyonaryoch">
     <title lang="en">Metro Morning News</title>
+    <desc lang="en">Metro Morning News</desc>
   </programme>
   <programme start="20260825000000 +0000" stop="20260825020000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Frontline Sa Umaga (Live)</title>
+    <desc lang="en">Frontline Sa Umaga (Live)</desc>
   </programme>
   <programme start="20260825020000 +0000" stop="20260825033000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Ted Failon And Dj Chacha</title>
+    <desc lang="en">Ted Failon And Dj Chacha</desc>
   </programme>
   <programme start="20260825033000 +0000" stop="20260825040000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Wanted Sa Radyo (Delayed Telecast)</title>
+    <desc lang="en">Wanted Sa Radyo (Delayed Telecast)</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825063000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Frontline Express Am (Delayed Telecast,10:30Am)</title>
+    <desc lang="en">Frontline Express Am (Delayed Telecast,10:30Am)</desc>
   </programme>
   <programme start="20260825063000 +0000" stop="20260825080000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">E.A.T. Bulaga (Episode969)</title>
+    <desc lang="en">E.A.T. Bulaga (Episode969)</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825084500 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Cine Cinco Sa Hapon:</title>
+    <desc lang="en">Cine Cinco Sa Hapon:</desc>
   </programme>
   <programme start="20260825084500 +0000" stop="20260825090000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Frontline Express Pm (Delayed Telecast,3:15Pm)</title>
+    <desc lang="en">Frontline Express Pm (Delayed Telecast,3:15Pm)</desc>
   </programme>
   <programme start="20260825090000 +0000" stop="20260825110000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Wow Mali Doble Tawa (S02 Ep.11B)</title>
+    <desc lang="en">Wow Mali Doble Tawa (S02 Ep.11B)</desc>
   </programme>
   <programme start="20260825110000 +0000" stop="20260825113000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">2026 Nsac World Basketball Invitational: Ust Vs Tenri Univeristy (Delayed Telecast - August14,3:00Pm Game)</title>
+    <desc lang="en">2026 Nsac World Basketball Invitational: Ust Vs Tenri Univeristy (Delayed Telecast - August14,3:00Pm Game)</desc>
   </programme>
   <programme start="20260825113000 +0000" stop="20260825133000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">PBA Recap</title>
+    <desc lang="en">PBA Recap</desc>
   </programme>
   <programme start="20260825133000 +0000" stop="20260825140000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">2026 Nsac World Basketball Invitational: Feu Vs Nagoyo Fighting Eagles (Delayed Telecast - August14,5:00Pm Game)</title>
+    <desc lang="en">2026 Nsac World Basketball Invitational: Feu Vs Nagoyo Fighting Eagles (Delayed Telecast - August14,5:00Pm Game)</desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825143000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">PBA Recap</title>
+    <desc lang="en">PBA Recap</desc>
   </programme>
   <programme start="20260825143000 +0000" stop="20260825150000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Med Talk Health Talk (S01 Ep.19 - Wellness Through Yoga)</title>
+    <desc lang="en">Med Talk Health Talk (S01 Ep.19 - Wellness Through Yoga)</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825151500 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Building Bridges (S06 Ep. 05 - Mrt7)</title>
+    <desc lang="en">Building Bridges (S06 Ep. 05 - Mrt7)</desc>
   </programme>
   <programme start="20260825151500 +0000" stop="20260825155500 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Wow Mali Doble Tawa (S02 Ep.11A)</title>
+    <desc lang="en">Wow Mali Doble Tawa (S02 Ep.11A)</desc>
   </programme>
   <programme start="20260825155500 +0000" stop="20260825155900 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Frontline Tonight (Delayed Telecast)</title>
+    <desc lang="en">Frontline Tonight (Delayed Telecast)</desc>
   </programme>
   <programme start="20260825155900 +0000" stop="20260825220000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Sign Off</title>
+    <desc lang="en">Sign Off</desc>
   </programme>
   <programme start="20260825220000 +0000" stop="20260826000000 +0000" channel="cnn_rptv_prod_hd">
     <title lang="en">Sign On</title>
+    <desc lang="en">Sign On</desc>
   </programme>
   <programme start="20260825000000 +0000" stop="20260825010000 +0000" channel="cg_hitsnow">
     <title lang="en">Sheriff Country S1</title>
@@ -1056,45 +1104,59 @@
   </programme>
   <programme start="20260824221600 +0000" stop="20260825001800 +0000" channel="cg_studio_universal_hd">
     <title lang="en">2 Fast 2 Furious </title>
+    <desc lang="en">2 Fast 2 Furious </desc>
   </programme>
   <programme start="20260825001800 +0000" stop="20260825020000 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Beethoven </title>
+    <desc lang="en">Beethoven </desc>
   </programme>
   <programme start="20260825020000 +0000" stop="20260825035400 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Nanny Mcphee </title>
+    <desc lang="en">Nanny Mcphee </desc>
   </programme>
   <programme start="20260825035400 +0000" stop="20260825055600 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Fast and Furious</title>
+    <desc lang="en">Fast and Furious</desc>
   </programme>
   <programme start="20260825055600 +0000" stop="20260825075900 +0000" channel="cg_studio_universal_hd">
     <title lang="en">2 Fast 2 Furious </title>
+    <desc lang="en">2 Fast 2 Furious </desc>
   </programme>
   <programme start="20260825075900 +0000" stop="20260825100400 +0000" channel="cg_studio_universal_hd">
     <title lang="en">The Mummy </title>
+    <desc lang="en">The Mummy </desc>
   </programme>
   <programme start="20260825100400 +0000" stop="20260825115300 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Fear </title>
+    <desc lang="en">Fear </desc>
   </programme>
   <programme start="20260825115300 +0000" stop="20260825135200 +0000" channel="cg_studio_universal_hd">
     <title lang="en">The Fast and the Furious: Tokyo Drift </title>
+    <desc lang="en">The Fast and the Furious: Tokyo Drift </desc>
   </programme>
   <programme start="20260825135200 +0000" stop="20260825155400 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Fast and Furious</title>
+    <desc lang="en">Fast and Furious</desc>
   </programme>
   <programme start="20260825155400 +0000" stop="20260825163100 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Defying Gravity: The Curtain Rises on Wicked </title>
+    <desc lang="en">Defying Gravity: The Curtain Rises on Wicked </desc>
   </programme>
   <programme start="20260825163100 +0000" stop="20260825183600 +0000" channel="cg_studio_universal_hd">
     <title lang="en">The Mummy (17) </title>
+    <desc lang="en">The Mummy (17) </desc>
   </programme>
   <programme start="20260825183600 +0000" stop="20260825202500 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Fear </title>
+    <desc lang="en">Fear </desc>
   </programme>
   <programme start="20260825202500 +0000" stop="20260825222400 +0000" channel="cg_studio_universal_hd">
     <title lang="en">The Fast and the Furious: Tokyo Drift </title>
+    <desc lang="en">The Fast and the Furious: Tokyo Drift </desc>
   </programme>
   <programme start="20260825222400 +0000" stop="20260826002600 +0000" channel="cg_studio_universal_hd">
     <title lang="en">Fast and Furious</title>
+    <desc lang="en">Fast and Furious</desc>
   </programme>
   <programme start="20260825000000 +0000" stop="20260825010000 +0000" channel="kapatid_hd">
     <title lang="en">To Be Announced</title>
@@ -1918,60 +1980,79 @@
   </programme>
   <programme start="20260824230000 +0000" stop="20260825010000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825030000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825030000 +0000" stop="20260825040000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825050000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825050000 +0000" stop="20260825060000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825060000 +0000" stop="20260825080000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825090000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825090000 +0000" stop="20260825100000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825100000 +0000" stop="20260825130000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825130000 +0000" stop="20260825150000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825170000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825170000 +0000" stop="20260825180000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825180000 +0000" stop="20260825190000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825190000 +0000" stop="20260825210000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825210000 +0000" stop="20260825220000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825220000 +0000" stop="20260825223000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825223000 +0000" stop="20260825230000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260826010000 +0000" channel="cg_a2z">
     <title lang="en">A2Z</title>
+    <desc lang="en">A2Z</desc>
   </programme>
   <programme start="20260824234000 +0000" stop="20260825000500 +0000" channel="cg_dreamworks_hd1">
     <title lang="en">Madagascar: A Little Wild</title>
@@ -2495,27 +2576,35 @@
   </programme>
   <programme start="20260824180000 +0000" stop="20260825023000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 250: Winston-Salem Open Day 2</title>
+    <desc lang="en">ATP 250: Winston-Salem Open Day 2</desc>
   </programme>
   <programme start="20260825023000 +0000" stop="20260825053000 +0000" channel="cg_ps_hd1">
     <title lang="en">NHL Stanley Cup Finals</title>
+    <desc lang="en">NHL Stanley Cup Finals</desc>
   </programme>
   <programme start="20260825053000 +0000" stop="20260825140000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 250: Winston-Salem Open Day 2</title>
+    <desc lang="en">ATP 250: Winston-Salem Open Day 2</desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825150000 +0000" channel="cg_ps_hd1">
     <title lang="en">Hexagon Cup 2026 Highlights</title>
+    <desc lang="en">Hexagon Cup 2026 Highlights</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825153000 +0000" channel="cg_ps_hd1">
     <title lang="en">NFL Extra </title>
+    <desc lang="en">NFL Extra </desc>
   </programme>
   <programme start="20260825153000 +0000" stop="20260825160000 +0000" channel="cg_ps_hd1">
     <title lang="en">NFL GameDay</title>
+    <desc lang="en">NFL GameDay</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825180000 +0000" channel="cg_ps_hd1">
     <title lang="en">FIFA World Cup 2026</title>
+    <desc lang="en">FIFA World Cup 2026</desc>
   </programme>
   <programme start="20260825180000 +0000" stop="20260826023000 +0000" channel="cg_ps_hd1">
     <title lang="en">ATP 250: Winston-Salem Open Day 3</title>
+    <desc lang="en">ATP 250: Winston-Salem Open Day 3</desc>
   </programme>
   <programme start="20260824232000 +0000" stop="20260825013000 +0000" channel="dr_rockextreme">
     <title lang="en">Widows</title>
@@ -2571,51 +2660,67 @@
   </programme>
   <programme start="20260825000000 +0000" stop="20260825003000 +0000" channel="dr_tapsports">
     <title lang="en">Straight Up Steve Austin S1</title>
+    <desc lang="en">Straight Up Steve Austin S1</desc>
   </programme>
   <programme start="20260825003000 +0000" stop="20260825010000 +0000" channel="dr_tapsports">
     <title lang="en">Drive S1</title>
+    <desc lang="en">Drive S1</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825033000 +0000" channel="dr_tapsports">
     <title lang="en">Sharks Billiard Association (SBA) Season 2</title>
+    <desc lang="en">Sharks Billiard Association (SBA) Season 2</desc>
   </programme>
   <programme start="20260825033000 +0000" stop="20260825040000 +0000" channel="dr_tapsports">
     <title lang="en">ON Point</title>
+    <desc lang="en">ON Point</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825060000 +0000" channel="dr_tapsports">
     <title lang="en">Liga ACB 2025</title>
+    <desc lang="en">Liga ACB 2025</desc>
   </programme>
   <programme start="20260825060000 +0000" stop="20260825080000 +0000" channel="dr_tapsports">
     <title lang="en">SUPERBOUTS</title>
+    <desc lang="en">SUPERBOUTS</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825100000 +0000" channel="dr_tapsports">
     <title lang="en">ITTF World Cup 2026</title>
+    <desc lang="en">ITTF World Cup 2026</desc>
   </programme>
   <programme start="20260825100000 +0000" stop="20260825120000 +0000" channel="dr_tapsports">
     <title lang="en">Liga ACB 2025</title>
+    <desc lang="en">Liga ACB 2025</desc>
   </programme>
   <programme start="20260825120000 +0000" stop="20260825143000 +0000" channel="dr_tapsports">
     <title lang="en">Sharks Billiard Association (SBA) Season 2</title>
+    <desc lang="en">Sharks Billiard Association (SBA) Season 2</desc>
   </programme>
   <programme start="20260825143000 +0000" stop="20260825150000 +0000" channel="dr_tapsports">
     <title lang="en">MONSTER Jam 2023</title>
+    <desc lang="en">MONSTER Jam 2023</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="dr_tapsports">
     <title lang="en">Jay Leno&apos;s Garage</title>
+    <desc lang="en">Jay Leno&apos;s Garage</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825180000 +0000" channel="dr_tapsports">
     <title lang="en">Liga ACB 2025</title>
+    <desc lang="en">Liga ACB 2025</desc>
   </programme>
   <programme start="20260825180000 +0000" stop="20260825200000 +0000" channel="dr_tapsports">
     <title lang="en">SUPERBOUTS</title>
+    <desc lang="en">SUPERBOUTS</desc>
   </programme>
   <programme start="20260825200000 +0000" stop="20260825223000 +0000" channel="dr_tapsports">
     <title lang="en">ITTF World Cup 2026</title>
+    <desc lang="en">ITTF World Cup 2026</desc>
   </programme>
   <programme start="20260825223000 +0000" stop="20260825230000 +0000" channel="dr_tapsports">
     <title lang="en">Drive S1</title>
+    <desc lang="en">Drive S1</desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260826010000 +0000" channel="dr_tapsports">
     <title lang="en">SUPERBOUTS</title>
+    <desc lang="en">SUPERBOUTS</desc>
   </programme>
   <programme start="20260824235500 +0000" stop="20260825004500 +0000" channel="cg_bbcearth_hd1">
     <title lang="en">Chasing Monsters 5</title>
@@ -2919,6 +3024,7 @@
   </programme>
   <programme start="20260825082500 +0000" stop="20260825101000 +0000" channel="dr_rockentertainment">
     <title lang="en">Brothers</title>
+    <desc lang="en">Brothers</desc>
   </programme>
   <programme start="20260825101000 +0000" stop="20260825111500 +0000" channel="dr_rockentertainment">
     <title lang="en">The Wheel Of Time S3</title>
@@ -3082,6 +3188,7 @@
   </programme>
   <programme start="20260825000000 +0000" stop="20260825010000 +0000" channel="dr_cctv4">
     <title lang="en">Global News</title>
+    <desc lang="en">Global News</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825013000 +0000" channel="dr_cctv4">
     <title lang="en">Asia Today</title>
@@ -3245,219 +3352,291 @@
   </programme>
   <programme start="20260824230000 +0000" stop="20260825010000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Magnolia vs. Meralco 50th PBA Governors Cup </title>
+    <desc lang="en">Magnolia vs. Meralco 50th PBA Governors Cup </desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825013000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Shaun Time </title>
+    <desc lang="en">Shaun Time </desc>
   </programme>
   <programme start="20260825013000 +0000" stop="20260825033000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">San Miguel vs Ginebra 49th PBA Governors Cup Fan Favorites</title>
+    <desc lang="en">San Miguel vs Ginebra 49th PBA Governors Cup Fan Favorites</desc>
   </programme>
   <programme start="20260825033000 +0000" stop="20260825053000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Purefoods vs Barako Bull 37th PBA Philippine Cup PBA Playback</title>
+    <desc lang="en">Purefoods vs Barako Bull 37th PBA Philippine Cup PBA Playback</desc>
   </programme>
   <programme start="20260825053000 +0000" stop="20260825073000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Rain or Shine vs. Barako Bull 40th PBA Philippine Cup PBA Playback</title>
+    <desc lang="en">Rain or Shine vs. Barako Bull 40th PBA Philippine Cup PBA Playback</desc>
   </programme>
   <programme start="20260825073000 +0000" stop="20260825093000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Alaska vs. Barako Bull 38th PBA Governor&apos;s Cup PBA Playback</title>
+    <desc lang="en">Alaska vs. Barako Bull 38th PBA Governor&apos;s Cup PBA Playback</desc>
   </programme>
   <programme start="20260825093000 +0000" stop="20260825113000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">PBA Playback </title>
+    <desc lang="en">PBA Playback </desc>
   </programme>
   <programme start="20260825113000 +0000" stop="20260825133000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">PBA Playback </title>
+    <desc lang="en">PBA Playback </desc>
   </programme>
   <programme start="20260825133000 +0000" stop="20260825153000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Meralco vs. Phoenix 50th PBA Governors Cup </title>
+    <desc lang="en">Meralco vs. Phoenix 50th PBA Governors Cup </desc>
   </programme>
   <programme start="20260825153000 +0000" stop="20260825160000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Hot Seat </title>
+    <desc lang="en">Hot Seat </desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825163000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Hot Seat </title>
+    <desc lang="en">Hot Seat </desc>
   </programme>
   <programme start="20260825163000 +0000" stop="20260825183000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Ginebra vs. TNT Finals 50th PBA Commissioners Cup  </title>
+    <desc lang="en">Ginebra vs. TNT Finals 50th PBA Commissioners Cup  </desc>
   </programme>
   <programme start="20260825183000 +0000" stop="20260825203000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Rain or Shine vs Phoenix 49th PBA Governors Cup Fan Favorites</title>
+    <desc lang="en">Rain or Shine vs Phoenix 49th PBA Governors Cup Fan Favorites</desc>
   </programme>
   <programme start="20260825203000 +0000" stop="20260825210000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Shaun Time </title>
+    <desc lang="en">Shaun Time </desc>
   </programme>
   <programme start="20260825210000 +0000" stop="20260825230000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Magnolia vs. Meralco 50th PBA Governors Cup </title>
+    <desc lang="en">Magnolia vs. Meralco 50th PBA Governors Cup </desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260826010000 +0000" channel="cg_pbarush_hd1">
     <title lang="en">Terrafirma vs. NLEX 50th PBA Governors Cup </title>
+    <desc lang="en">Terrafirma vs. NLEX 50th PBA Governors Cup </desc>
   </programme>
   <programme start="20260825000000 +0000" stop="20260825003000 +0000" channel="arirang_sd">
     <title lang="en">Diplomat&apos;s Archive: Hidden Stories</title>
+    <desc lang="en">Diplomat&apos;s Archive: Hidden Stories</desc>
   </programme>
   <programme start="20260825003000 +0000" stop="20260825010000 +0000" channel="arirang_sd">
     <title lang="en">Regional Tastes: Chungcheong</title>
+    <desc lang="en">Regional Tastes: Chungcheong</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825013000 +0000" channel="arirang_sd">
     <title lang="en">New Day At Arirang</title>
+    <desc lang="en">New Day At Arirang</desc>
   </programme>
   <programme start="20260825013000 +0000" stop="20260825020000 +0000" channel="arirang_sd">
     <title lang="en">News Generation [L]</title>
+    <desc lang="en">News Generation [L]</desc>
   </programme>
   <programme start="20260825020000 +0000" stop="20260825030000 +0000" channel="arirang_sd">
     <title lang="en">Culture Crunch [L]</title>
+    <desc lang="en">Culture Crunch [L]</desc>
   </programme>
   <programme start="20260825030000 +0000" stop="20260825033000 +0000" channel="arirang_sd">
     <title lang="en">Arirang News 12:00</title>
+    <desc lang="en">Arirang News 12:00</desc>
   </programme>
   <programme start="20260825033000 +0000" stop="20260825040000 +0000" channel="arirang_sd">
     <title lang="en">Diplomat&apos;s Archive: Hidden Stories</title>
+    <desc lang="en">Diplomat&apos;s Archive: Hidden Stories</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825050000 +0000" channel="arirang_sd">
     <title lang="en">Gugak The Music Of Korea</title>
+    <desc lang="en">Gugak The Music Of Korea</desc>
   </programme>
   <programme start="20260825050000 +0000" stop="20260825053000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Dive [L]</title>
+    <desc lang="en">K-Culture Dive [L]</desc>
   </programme>
   <programme start="20260825053000 +0000" stop="20260825060000 +0000" channel="arirang_sd">
     <title lang="en">News Generation [R]</title>
+    <desc lang="en">News Generation [R]</desc>
   </programme>
   <programme start="20260825060000 +0000" stop="20260825063000 +0000" channel="arirang_sd">
     <title lang="en">Regional Tastes: Chungcheong</title>
+    <desc lang="en">Regional Tastes: Chungcheong</desc>
   </programme>
   <programme start="20260825063000 +0000" stop="20260825065000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Minutes: K-People</title>
+    <desc lang="en">K-Culture Minutes: K-People</desc>
   </programme>
   <programme start="20260825065000 +0000" stop="20260825070000 +0000" channel="arirang_sd">
     <title lang="en">The Living Sea Of Jeju</title>
+    <desc lang="en">The Living Sea Of Jeju</desc>
   </programme>
   <programme start="20260825070000 +0000" stop="20260825070500 +0000" channel="arirang_sd">
     <title lang="en">AI Headline News</title>
+    <desc lang="en">AI Headline News</desc>
   </programme>
   <programme start="20260825070500 +0000" stop="20260825073000 +0000" channel="arirang_sd">
     <title lang="en">Arirang Special</title>
+    <desc lang="en">Arirang Special</desc>
   </programme>
   <programme start="20260825073000 +0000" stop="20260825080000 +0000" channel="arirang_sd">
     <title lang="en">Diplomat&apos;s Archive: Hidden Stories</title>
+    <desc lang="en">Diplomat&apos;s Archive: Hidden Stories</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825083000 +0000" channel="arirang_sd">
     <title lang="en">The DAIly Report</title>
+    <desc lang="en">The DAIly Report</desc>
   </programme>
   <programme start="20260825083000 +0000" stop="20260825090000 +0000" channel="arirang_sd">
     <title lang="en">Press Perspective [L]</title>
+    <desc lang="en">Press Perspective [L]</desc>
   </programme>
   <programme start="20260825090000 +0000" stop="20260825100000 +0000" channel="arirang_sd">
     <title lang="en">Gugak The Music Of Korea</title>
+    <desc lang="en">Gugak The Music Of Korea</desc>
   </programme>
   <programme start="20260825100000 +0000" stop="20260825103000 +0000" channel="arirang_sd">
     <title lang="en">With Science, We Live</title>
+    <desc lang="en">With Science, We Live</desc>
   </programme>
   <programme start="20260825103000 +0000" stop="20260825105000 +0000" channel="arirang_sd">
     <title lang="en">Drawing Diary</title>
+    <desc lang="en">Drawing Diary</desc>
   </programme>
   <programme start="20260825105000 +0000" stop="20260825110000 +0000" channel="arirang_sd">
     <title lang="en">K-Chat: Travel In Korea</title>
+    <desc lang="en">K-Chat: Travel In Korea</desc>
   </programme>
   <programme start="20260825110000 +0000" stop="20260825113000 +0000" channel="arirang_sd">
     <title lang="en">Newscenter</title>
+    <desc lang="en">Newscenter</desc>
   </programme>
   <programme start="20260825113000 +0000" stop="20260825120000 +0000" channel="arirang_sd">
     <title lang="en">Within The Frame [L]</title>
+    <desc lang="en">Within The Frame [L]</desc>
   </programme>
   <programme start="20260825120000 +0000" stop="20260825123000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Dive [R]</title>
+    <desc lang="en">K-Culture Dive [R]</desc>
   </programme>
   <programme start="20260825123000 +0000" stop="20260825125000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Minutes: K-People</title>
+    <desc lang="en">K-Culture Minutes: K-People</desc>
   </programme>
   <programme start="20260825125000 +0000" stop="20260825130000 +0000" channel="arirang_sd">
     <title lang="en">The Living Sea Of Jeju</title>
+    <desc lang="en">The Living Sea Of Jeju</desc>
   </programme>
   <programme start="20260825130000 +0000" stop="20260825130500 +0000" channel="arirang_sd">
     <title lang="en">AI Headline News</title>
+    <desc lang="en">AI Headline News</desc>
   </programme>
   <programme start="20260825130500 +0000" stop="20260825133000 +0000" channel="arirang_sd">
     <title lang="en">Arirang Special</title>
+    <desc lang="en">Arirang Special</desc>
   </programme>
   <programme start="20260825133000 +0000" stop="20260825140000 +0000" channel="arirang_sd">
     <title lang="en">Diplomat&apos;s Archive: Hidden Stories</title>
+    <desc lang="en">Diplomat&apos;s Archive: Hidden Stories</desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825143000 +0000" channel="arirang_sd">
     <title lang="en">Press Perspective [R]</title>
+    <desc lang="en">Press Perspective [R]</desc>
   </programme>
   <programme start="20260825143000 +0000" stop="20260825145000 +0000" channel="arirang_sd">
     <title lang="en">The Grand Heritage K-Asmr(20)</title>
+    <desc lang="en">The Grand Heritage K-Asmr(20)</desc>
   </programme>
   <programme start="20260825145000 +0000" stop="20260825150000 +0000" channel="arirang_sd">
     <title lang="en">The Grand Heritage Four Seasons</title>
+    <desc lang="en">The Grand Heritage Four Seasons</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825153000 +0000" channel="arirang_sd">
     <title lang="en">News Generation [R]</title>
+    <desc lang="en">News Generation [R]</desc>
   </programme>
   <programme start="20260825153000 +0000" stop="20260825155000 +0000" channel="arirang_sd">
     <title lang="en">Drawing Diary</title>
+    <desc lang="en">Drawing Diary</desc>
   </programme>
   <programme start="20260825155000 +0000" stop="20260825160000 +0000" channel="arirang_sd">
     <title lang="en">K-Chat: Travel In Korea</title>
+    <desc lang="en">K-Chat: Travel In Korea</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825162000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Minutes: K-People</title>
+    <desc lang="en">K-Culture Minutes: K-People</desc>
   </programme>
   <programme start="20260825162000 +0000" stop="20260825163000 +0000" channel="arirang_sd">
     <title lang="en">Exploring Korean Literature B</title>
+    <desc lang="en">Exploring Korean Literature B</desc>
   </programme>
   <programme start="20260825163000 +0000" stop="20260825170000 +0000" channel="arirang_sd">
     <title lang="en">Regional Tastes: Chungcheong</title>
+    <desc lang="en">Regional Tastes: Chungcheong</desc>
   </programme>
   <programme start="20260825170000 +0000" stop="20260825180000 +0000" channel="arirang_sd">
     <title lang="en">Gugak The Music Of Korea</title>
+    <desc lang="en">Gugak The Music Of Korea</desc>
   </programme>
   <programme start="20260825180000 +0000" stop="20260825183000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Dive [R]</title>
+    <desc lang="en">K-Culture Dive [R]</desc>
   </programme>
   <programme start="20260825183000 +0000" stop="20260825190000 +0000" channel="arirang_sd">
     <title lang="en">Diplomat&apos;s Archive: Hidden Stories</title>
+    <desc lang="en">Diplomat&apos;s Archive: Hidden Stories</desc>
   </programme>
   <programme start="20260825190000 +0000" stop="20260825193000 +0000" channel="arirang_sd">
     <title lang="en">Within The Frame [R]</title>
+    <desc lang="en">Within The Frame [R]</desc>
   </programme>
   <programme start="20260825193000 +0000" stop="20260825195000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Minutes: K-People</title>
+    <desc lang="en">K-Culture Minutes: K-People</desc>
   </programme>
   <programme start="20260825195000 +0000" stop="20260825200000 +0000" channel="arirang_sd">
     <title lang="en">Exploring Korean Literature B</title>
+    <desc lang="en">Exploring Korean Literature B</desc>
   </programme>
   <programme start="20260825200000 +0000" stop="20260825203000 +0000" channel="arirang_sd">
     <title lang="en">Regional Tastes: Chungcheong</title>
+    <desc lang="en">Regional Tastes: Chungcheong</desc>
   </programme>
   <programme start="20260825203000 +0000" stop="20260825205000 +0000" channel="arirang_sd">
     <title lang="en">The Grand Heritage K-Asmr(20)</title>
+    <desc lang="en">The Grand Heritage K-Asmr(20)</desc>
   </programme>
   <programme start="20260825205000 +0000" stop="20260825210000 +0000" channel="arirang_sd">
     <title lang="en">The Grand Heritage Four Seasons</title>
+    <desc lang="en">The Grand Heritage Four Seasons</desc>
   </programme>
   <programme start="20260825210000 +0000" stop="20260825220000 +0000" channel="arirang_sd">
     <title lang="en">Gugak The Music Of Korea</title>
+    <desc lang="en">Gugak The Music Of Korea</desc>
   </programme>
   <programme start="20260825220000 +0000" stop="20260825223000 +0000" channel="arirang_sd">
     <title lang="en">Premium Collection</title>
+    <desc lang="en">Premium Collection</desc>
   </programme>
   <programme start="20260825223000 +0000" stop="20260825225000 +0000" channel="arirang_sd">
     <title lang="en">K-Arts Artists</title>
+    <desc lang="en">K-Arts Artists</desc>
   </programme>
   <programme start="20260825225000 +0000" stop="20260825230000 +0000" channel="arirang_sd">
     <title lang="en">Heritage Walks With Little Friend</title>
+    <desc lang="en">Heritage Walks With Little Friend</desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260825232000 +0000" channel="arirang_sd">
     <title lang="en">Art And The City</title>
+    <desc lang="en">Art And The City</desc>
   </programme>
   <programme start="20260825232000 +0000" stop="20260825233000 +0000" channel="arirang_sd">
     <title lang="en">K-Chat: Travel In Korea</title>
+    <desc lang="en">K-Chat: Travel In Korea</desc>
   </programme>
   <programme start="20260825233000 +0000" stop="20260825235000 +0000" channel="arirang_sd">
     <title lang="en">K-Culture Minutes: K-Story</title>
+    <desc lang="en">K-Culture Minutes: K-Story</desc>
   </programme>
   <programme start="20260825235000 +0000" stop="20260826000000 +0000" channel="arirang_sd">
     <title lang="en">Exploring Korean Literature B</title>
+    <desc lang="en">Exploring Korean Literature B</desc>
   </programme>
   <programme start="20260824233000 +0000" stop="20260825001000 +0000" channel="kbsworld">
     <title lang="en">A Graceful Liar</title>
@@ -3469,6 +3648,7 @@
   </programme>
   <programme start="20260825010500 +0000" stop="20260825011000 +0000" channel="kbsworld">
     <title lang="en">National Heritage Pilgrimage Deo</title>
+    <desc lang="en">National Heritage Pilgrimage Deo</desc>
   </programme>
   <programme start="20260825011000 +0000" stop="20260825012500 +0000" channel="kbsworld">
     <title lang="en">The Seasons W</title>
@@ -3508,6 +3688,7 @@
   </programme>
   <programme start="20260825082000 +0000" stop="20260825082500 +0000" channel="kbsworld">
     <title lang="en">National Heritage Pilgrimage Deo</title>
+    <desc lang="en">National Heritage Pilgrimage Deo</desc>
   </programme>
   <programme start="20260825082500 +0000" stop="20260825084000 +0000" channel="kbsworld">
     <title lang="en">The Seasons W</title>
@@ -3527,6 +3708,7 @@
   </programme>
   <programme start="20260825094500 +0000" stop="20260825111500 +0000" channel="kbsworld">
     <title lang="en">2026 Boryeong Mud Festival - K-Pop Super Live</title>
+    <desc lang="en">2026 Boryeong Mud Festival - K-Pop Super Live</desc>
   </programme>
   <programme start="20260825111500 +0000" stop="20260825112000 +0000" channel="kbsworld">
     <title lang="en">The Best Of Immortal Songs</title>
@@ -3558,6 +3740,7 @@
   </programme>
   <programme start="20260825173000 +0000" stop="20260825173500 +0000" channel="kbsworld">
     <title lang="en">National Heritage Pilgrimage Deo</title>
+    <desc lang="en">National Heritage Pilgrimage Deo</desc>
   </programme>
   <programme start="20260825173500 +0000" stop="20260825175000 +0000" channel="kbsworld">
     <title lang="en">The Seasons W</title>
@@ -3589,81 +3772,107 @@
   </programme>
   <programme start="20260825000000 +0000" stop="20260825003000 +0000" channel="onenews_hd1">
     <title lang="en">The Long Take</title>
+    <desc lang="en">The Long Take</desc>
   </programme>
   <programme start="20260825003000 +0000" stop="20260825010000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Morning Matters</title>
+    <desc lang="en">LIVE Morning Matters</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825013000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Money Talks</title>
+    <desc lang="en">LIVE Money Talks</desc>
   </programme>
   <programme start="20260825013000 +0000" stop="20260825023000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Morning Matters</title>
+    <desc lang="en">LIVE Morning Matters</desc>
   </programme>
   <programme start="20260825023000 +0000" stop="20260825040000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE One News Now</title>
+    <desc lang="en">LIVE One News Now</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825050000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE One Balita Pilipinas Noon</title>
+    <desc lang="en">LIVE One Balita Pilipinas Noon</desc>
   </programme>
   <programme start="20260825050000 +0000" stop="20260825060000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE One News Now</title>
+    <desc lang="en">LIVE One News Now</desc>
   </programme>
   <programme start="20260825060000 +0000" stop="20260825070000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE One News Now</title>
+    <desc lang="en">LIVE One News Now</desc>
   </programme>
   <programme start="20260825070000 +0000" stop="20260825071500 +0000" channel="onenews_hd1">
     <title lang="en">LIVE One News Now</title>
+    <desc lang="en">LIVE One News Now</desc>
   </programme>
   <programme start="20260825071500 +0000" stop="20260825074500 +0000" channel="onenews_hd1">
     <title lang="en">Ride PH</title>
+    <desc lang="en">Ride PH</desc>
   </programme>
   <programme start="20260825074500 +0000" stop="20260825080000 +0000" channel="onenews_hd1">
     <title lang="en">Abuhan</title>
+    <desc lang="en">Abuhan</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825093000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Storycon</title>
+    <desc lang="en">LIVE Storycon</desc>
   </programme>
   <programme start="20260825093000 +0000" stop="20260825100000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Newsfeed</title>
+    <desc lang="en">LIVE Newsfeed</desc>
   </programme>
   <programme start="20260825100000 +0000" stop="20260825110000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Sa Totoo Lang</title>
+    <desc lang="en">LIVE Sa Totoo Lang</desc>
   </programme>
   <programme start="20260825110000 +0000" stop="20260825120000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE Political Beat</title>
+    <desc lang="en">LIVE Political Beat</desc>
   </programme>
   <programme start="20260825120000 +0000" stop="20260825130000 +0000" channel="onenews_hd1">
     <title lang="en">LIVE The Big Story</title>
+    <desc lang="en">LIVE The Big Story</desc>
   </programme>
   <programme start="20260825130000 +0000" stop="20260825160000 +0000" channel="onenews_hd1">
     <title lang="en">Long Conversation</title>
+    <desc lang="en">Long Conversation</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825173000 +0000" channel="onenews_hd1">
     <title lang="en">Storycon</title>
+    <desc lang="en">Storycon</desc>
   </programme>
   <programme start="20260825173000 +0000" stop="20260825183000 +0000" channel="onenews_hd1">
     <title lang="en">Political Beat</title>
+    <desc lang="en">Political Beat</desc>
   </programme>
   <programme start="20260825183000 +0000" stop="20260825193000 +0000" channel="onenews_hd1">
     <title lang="en">Long Conversation</title>
+    <desc lang="en">Long Conversation</desc>
   </programme>
   <programme start="20260825193000 +0000" stop="20260825203000 +0000" channel="onenews_hd1">
     <title lang="en">Discovereats</title>
+    <desc lang="en">Discovereats</desc>
   </programme>
   <programme start="20260825203000 +0000" stop="20260825213000 +0000" channel="onenews_hd1">
     <title lang="en">Presello</title>
+    <desc lang="en">Presello</desc>
   </programme>
   <programme start="20260825213000 +0000" stop="20260825220000 +0000" channel="onenews_hd1">
     <title lang="en">SA INC</title>
+    <desc lang="en">SA INC</desc>
   </programme>
   <programme start="20260825220000 +0000" stop="20260825223000 +0000" channel="onenews_hd1">
     <title lang="en">Ride PH</title>
+    <desc lang="en">Ride PH</desc>
   </programme>
   <programme start="20260825223000 +0000" stop="20260825230000 +0000" channel="onenews_hd1">
     <title lang="en">Chronicles</title>
+    <desc lang="en">Chronicles</desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260826000000 +0000" channel="onenews_hd1">
     <title lang="en">Woman In Action</title>
+    <desc lang="en">Woman In Action</desc>
   </programme>
   <programme start="20260824221500 +0000" stop="20260825001000 +0000" channel="kix_hd1">
     <title lang="en">Monkey Twins</title>
@@ -4111,27 +4320,35 @@
   </programme>
   <programme start="20260824230000 +0000" stop="20260825010000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">AdU vs. DLSZ U16 Basketball Tournament UAAP Season 89 </title>
+    <desc lang="en">AdU vs. DLSZ U16 Basketball Tournament UAAP Season 89 </desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825013000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">The Glory Days  </title>
+    <desc lang="en">The Glory Days  </desc>
   </programme>
   <programme start="20260825013000 +0000" stop="20260825103000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">LIVE Day 2 Esports MLBB UAAP Season 88 </title>
+    <desc lang="en">LIVE Day 2 Esports MLBB UAAP Season 88 </desc>
   </programme>
   <programme start="20260825103000 +0000" stop="20260825110000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">The Bounce  </title>
+    <desc lang="en">The Bounce  </desc>
   </programme>
   <programme start="20260825110000 +0000" stop="20260825133000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">NU vs. UP Women&apos;s Volleyball Tournament UAAP Season 88   </title>
+    <desc lang="en">NU vs. UP Women&apos;s Volleyball Tournament UAAP Season 88   </desc>
   </programme>
   <programme start="20260825133000 +0000" stop="20260825140000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">The Bounce  </title>
+    <desc lang="en">The Bounce  </desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825230000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">Day 2 Esports MLBB UAAP Season 88 </title>
+    <desc lang="en">Day 2 Esports MLBB UAAP Season 88 </desc>
   </programme>
   <programme start="20260825230000 +0000" stop="20260826010000 +0000" channel="cg_uaap_cplay_sd">
     <title lang="en">UPIS vs. UST U16 Basketball Tournament UAAP Season 89 </title>
+    <desc lang="en">UPIS vs. UST U16 Basketball Tournament UAAP Season 89 </desc>
   </programme>
   <programme start="20260824232600 +0000" stop="20260825000900 +0000" channel="travel_channel_sd">
     <title lang="en">Expedition Unknown: Over The Edge</title>
@@ -4295,21 +4512,27 @@
   </programme>
   <programme start="20260824210000 +0000" stop="20260825053000 +0000" channel="premiersports2hd">
     <title lang="en">WTA 500: Abierto GNP Seguros Day 2</title>
+    <desc lang="en">WTA 500: Abierto GNP Seguros Day 2</desc>
   </programme>
   <programme start="20260825053000 +0000" stop="20260825083000 +0000" channel="premiersports2hd">
     <title lang="en">World Rugby Sevens Series: Hongkong Super Session</title>
+    <desc lang="en">World Rugby Sevens Series: Hongkong Super Session</desc>
   </programme>
   <programme start="20260825083000 +0000" stop="20260825160000 +0000" channel="premiersports2hd">
     <title lang="en">WTA 500: Abierto GNP Seguros Day 2</title>
+    <desc lang="en">WTA 500: Abierto GNP Seguros Day 2</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825203000 +0000" channel="premiersports2hd">
     <title lang="en">DP World Tour: Nexo Championship Day 3</title>
+    <desc lang="en">DP World Tour: Nexo Championship Day 3</desc>
   </programme>
   <programme start="20260825203000 +0000" stop="20260825210000 +0000" channel="premiersports2hd">
     <title lang="en">WTA 1000 Cincinnati Open Highlights</title>
+    <desc lang="en">WTA 1000 Cincinnati Open Highlights</desc>
   </programme>
   <programme start="20260825210000 +0000" stop="20260826053000 +0000" channel="premiersports2hd">
     <title lang="en">WTA 500: Abierto GNP Seguros Day 3</title>
+    <desc lang="en">WTA 500: Abierto GNP Seguros Day 3</desc>
   </programme>
   <programme start="20260824233000 +0000" stop="20260825003000 +0000" channel="hits_hd1">
     <title lang="en">CSI S4 E21 - Turn of the Screws</title>
@@ -4529,60 +4752,79 @@
   </programme>
   <programme start="20260824220000 +0000" stop="20260825040000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Ted Failon DJ Cha Cha Sa Radyo 5</title>
+    <desc lang="en">LIVE Ted Failon DJ Cha Cha Sa Radyo 5</desc>
   </programme>
   <programme start="20260825040000 +0000" stop="20260825050000 +0000" channel="oneph_sd">
     <title lang="en">LIVE One Balita Pilipinas Noon</title>
+    <desc lang="en">LIVE One Balita Pilipinas Noon</desc>
   </programme>
   <programme start="20260825050000 +0000" stop="20260825060000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Cristy Ferminute</title>
+    <desc lang="en">LIVE Cristy Ferminute</desc>
   </programme>
   <programme start="20260825060000 +0000" stop="20260825073000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Wanted Sa Radyo</title>
+    <desc lang="en">LIVE Wanted Sa Radyo</desc>
   </programme>
   <programme start="20260825073000 +0000" stop="20260825080000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Wanted Sa Radyo</title>
+    <desc lang="en">LIVE Wanted Sa Radyo</desc>
   </programme>
   <programme start="20260825080000 +0000" stop="20260825090000 +0000" channel="oneph_sd">
     <title lang="en">Julius And Tintin</title>
+    <desc lang="en">Julius And Tintin</desc>
   </programme>
   <programme start="20260825090000 +0000" stop="20260825093000 +0000" channel="oneph_sd">
     <title lang="en">LIVE One Balita Bai</title>
+    <desc lang="en">LIVE One Balita Bai</desc>
   </programme>
   <programme start="20260825093000 +0000" stop="20260825101500 +0000" channel="oneph_sd">
     <title lang="en">LIVE Una sa Lahat</title>
+    <desc lang="en">LIVE Una sa Lahat</desc>
   </programme>
   <programme start="20260825101500 +0000" stop="20260825120000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Frontline Pilipinas</title>
+    <desc lang="en">LIVE Frontline Pilipinas</desc>
   </programme>
   <programme start="20260825120000 +0000" stop="20260825130000 +0000" channel="oneph_sd">
     <title lang="en">Sa Totoo Lang</title>
+    <desc lang="en">Sa Totoo Lang</desc>
   </programme>
   <programme start="20260825130000 +0000" stop="20260825140000 +0000" channel="oneph_sd">
     <title lang="en">Amoy Chico: Usapang May Tama</title>
+    <desc lang="en">Amoy Chico: Usapang May Tama</desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825144500 +0000" channel="oneph_sd">
     <title lang="en">Kapatid Mo Idol Raffy Tulfo</title>
+    <desc lang="en">Kapatid Mo Idol Raffy Tulfo</desc>
   </programme>
   <programme start="20260825144500 +0000" stop="20260825150000 +0000" channel="oneph_sd">
     <title lang="en">Vibe Nights</title>
+    <desc lang="en">Vibe Nights</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="oneph_sd">
     <title lang="en">Cristy Ferminute</title>
+    <desc lang="en">Cristy Ferminute</desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825170000 +0000" channel="oneph_sd">
     <title lang="en">Woman In Action</title>
+    <desc lang="en">Woman In Action</desc>
   </programme>
   <programme start="20260825170000 +0000" stop="20260825180000 +0000" channel="oneph_sd">
     <title lang="en">Julius And Tintin</title>
+    <desc lang="en">Julius And Tintin</desc>
   </programme>
   <programme start="20260825180000 +0000" stop="20260825200000 +0000" channel="oneph_sd">
     <title lang="en">Wanted Sa Radyo</title>
+    <desc lang="en">Wanted Sa Radyo</desc>
   </programme>
   <programme start="20260825200000 +0000" stop="20260825220000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Good morning, Bayan!</title>
+    <desc lang="en">LIVE Good morning, Bayan!</desc>
   </programme>
   <programme start="20260825220000 +0000" stop="20260826040000 +0000" channel="oneph_sd">
     <title lang="en">LIVE Ted Failon DJ Cha Cha Sa Radyo 5</title>
+    <desc lang="en">LIVE Ted Failon DJ Cha Cha Sa Radyo 5</desc>
   </programme>
   <programme start="20260825000000 +0000" stop="20260825002400 +0000" channel="cg_foodnetwork_hd1">
     <title lang="en">Man V. Food (S6)</title>
@@ -6538,45 +6780,59 @@
   </programme>
   <programme start="20260824234500 +0000" stop="20260825014000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">13 Going on 30</title>
+    <desc lang="en">13 Going on 30</desc>
   </programme>
   <programme start="20260825014000 +0000" stop="20260825035500 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">South Of Heaven</title>
+    <desc lang="en">South Of Heaven</desc>
   </programme>
   <programme start="20260825035500 +0000" stop="20260825061500 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Where the Crawdads Sing</title>
+    <desc lang="en">Where the Crawdads Sing</desc>
   </programme>
   <programme start="20260825061500 +0000" stop="20260825075500 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Yours, Mine &amp; Ours</title>
+    <desc lang="en">Yours, Mine &amp; Ours</desc>
   </programme>
   <programme start="20260825075500 +0000" stop="20260825095500 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Lyle, Lyle Crocodile</title>
+    <desc lang="en">Lyle, Lyle Crocodile</desc>
   </programme>
   <programme start="20260825095500 +0000" stop="20260825115000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">State of the Union</title>
+    <desc lang="en">State of the Union</desc>
   </programme>
   <programme start="20260825115000 +0000" stop="20260825133000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Welcome Home</title>
+    <desc lang="en">Welcome Home</desc>
   </programme>
   <programme start="20260825133000 +0000" stop="20260825140000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Hollywood On Set </title>
+    <desc lang="en">Hollywood On Set </desc>
   </programme>
   <programme start="20260825140000 +0000" stop="20260825150000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Yellowjackets S2 </title>
+    <desc lang="en">Yellowjackets S2 </desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">SEE S2 </title>
+    <desc lang="en">SEE S2 </desc>
   </programme>
   <programme start="20260825160000 +0000" stop="20260825181500 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Pineapple Express</title>
+    <desc lang="en">Pineapple Express</desc>
   </programme>
   <programme start="20260825181500 +0000" stop="20260825202000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Promising Young Woman</title>
+    <desc lang="en">Promising Young Woman</desc>
   </programme>
   <programme start="20260825202000 +0000" stop="20260825222000 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Step Brothers</title>
+    <desc lang="en">Step Brothers</desc>
   </programme>
   <programme start="20260825222000 +0000" stop="20260826001500 +0000" channel="cg_tapmovies_hd1">
     <title lang="en">Abominable</title>
+    <desc lang="en">Abominable</desc>
   </programme>
   <programme start="20260825000000 +0000" stop="20260825010000 +0000" channel="cg_moonbug_kids_sd">
     <title lang="en">To Be Announced</title>
