@@ -5,46 +5,31 @@ async function generateEPG() {
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
 
-  // Define date window: 12:00 AM Manila Time today to +4 days
+  // Exact bounds: 12:00 AM Manila Time today up to 4 days ahead
   const startUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
   const endUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate() + 4, 23, 59, 59) - manilaOffset);
 
   const start = startUtc.toISOString().split('.')[0] + 'Z';
   const end = endUtc.toISOString().split('.')[0] + 'Z';
 
-  console.log(`Generating EPG covering ${start} to ${end}...`);
+  console.log(`Generating EPG from ${start} to ${end}...`);
 
-  // Define all known API endpoints to query and merge
-  const endpointConfigs = [
-    {
-      name: 'Quickplay PLive Console',
-      urlBuilder: (page) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${page}&pageSize=100`
-    },
-    {
-      name: 'Quickplay Web Catalog',
-      urlBuilder: (page) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`
-    },
-    {
-      name: 'FirstLight Live Catalog',
-      urlBuilder: (page) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`
-    }
+  const endpoints = [
+    (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
+    (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
+    (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
   ];
 
   let rawChannelEntries = [];
 
-  for (const ep of endpointConfigs) {
-    console.log(`Polling endpoint: ${ep.name}...`);
+  for (const getUrl of endpoints) {
     let page = 1;
-    let count = 0;
-
     while (page <= 10) {
       try {
-        const res = await fetch(ep.urlBuilder(page), {
+        const res = await fetch(getUrl(page), {
           headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
-            'Origin': 'https://cignalplay.com',
-            'Referer': 'https://cignalplay.com/'
+            'Accept': 'application/json, text/plain, */*'
           }
         });
 
@@ -55,17 +40,15 @@ async function generateEPG() {
         if (!Array.isArray(pageData) || pageData.length === 0) break;
 
         rawChannelEntries = rawChannelEntries.concat(pageData);
-        count += pageData.length;
         page++;
       } catch (err) {
         break;
       }
     }
-    console.log(`-> Fetched ${count} channel objects from ${ep.name}`);
   }
 
   if (rawChannelEntries.length === 0) {
-    console.error("Error: Could not retrieve data from any endpoint.");
+    console.error("Error: Could not retrieve data from any API.");
     process.exit(1);
   }
 
@@ -134,7 +117,6 @@ async function generateEPG() {
               });
             } else {
               const existing = slotMap.get(slotKey);
-              // Overwrite placeholder entry with real program data if available
               if (existing.isPlaceholder && !isPlaceholder) {
                 slotMap.set(slotKey, {
                   chId: targetId,
@@ -154,7 +136,6 @@ async function generateEPG() {
 
   const finalPrograms = Array.from(slotMap.values());
 
-  // Generate XMLTV output
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
   channelMap.forEach((name, id) => {
@@ -173,7 +154,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Generated cignal.xml containing ${channelMap.size} channels and ${finalPrograms.length} resolved programs.`);
+  console.log(`Success: Wrote ${channelMap.size} channel IDs and ${finalPrograms.length} programs to cignal.xml.`);
 }
 
 function escapeXml(unsafe) {
