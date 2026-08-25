@@ -3,53 +3,50 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Format dates explicitly in Asia/Manila timezone
-  const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
-  const formatter = new Intl.DateTimeFormat('en-CA', options);
+  // Calculate exact Midnight today and 23:59:59 tomorrow in Manila Time (UTC+8)
+  const manilaOffset = 8 * 60 * 60 * 1000;
+  const manilaNow = new Date(now.getTime() + manilaOffset);
   
-  const todayStr = formatter.format(now);
-  const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-  const tomorrowStr = formatter.format(tomorrowObj);
+  const startManila = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
+  const endManila = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate() + 2, 23, 59, 59) - manilaOffset);
 
-  // UTC query bounds covering today and tomorrow
-  const start = `${todayStr}T00:00:00Z`;
-  const end = `${tomorrowStr}T23:59:59Z`;
+  const start = startManila.toISOString().split('.')[0] + 'Z';
+  const end = endManila.toISOString().split('.')[0] + 'Z';
 
-  console.log(`Fetching schedule between ${start} and ${end}...`);
+  console.log(`Fetching schedule from ${start} to ${end}...`);
 
   let allChannels = [];
   let page = 1;
 
-  // 1. Loop through all pages to fetch every single channel in Cignal's catalog
   try {
     while (page <= 10) {
-      const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
+      const url = `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${start}&end=${end}&reg=ph&dt=web&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
       
       const res = await fetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'application/json'
+          'Accept': 'application/json, text/plain, */*',
+          'Origin': 'https://cignalplay.com',
+          'Referer': 'https://cignalplay.com/'
         }
       });
 
       if (!res.ok) {
-        console.log(`Page ${page} returned HTTP ${res.status}, stopping pagination.`);
+        console.log(`Page ${page} returned status ${res.status}. Ending pagination.`);
         break;
       }
 
       const json = await res.json();
       const pageData = json.data || [];
 
-      if (!Array.isArray(pageData) || pageData.length === 0) {
-        break;
-      }
+      if (!Array.isArray(pageData) || pageData.length === 0) break;
 
       allChannels = allChannels.concat(pageData);
       page++;
     }
 
     if (allChannels.length === 0) {
-      throw new Error("No channel entries found across API pages.");
+      throw new Error("No channel data returned from Cignal API.");
     }
 
     const channelMap = new Map();
@@ -61,7 +58,6 @@ async function generateEPG() {
       return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
     };
 
-    // 2. Process all channels
     allChannels.forEach(chItem => {
       const chId = chItem.cs || (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.cs);
       const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || chId;
@@ -79,7 +75,6 @@ async function generateEPG() {
                         "Regular Programming";
 
           const desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) || "";
-          
           const startTime = air.sc_st_dt;
           const endTime = air.sc_ed_dt;
 
@@ -97,7 +92,7 @@ async function generateEPG() {
       }
     });
 
-    // 3. Deduplicate: if a channel has real programs, remove duplicate placeholder entries
+    // Deduplicate placeholders if real programs exist for a channel
     const channelHasRealPrograms = new Set();
     programList.forEach(p => {
       if (!p.isPlaceholder) {
@@ -106,14 +101,13 @@ async function generateEPG() {
     });
 
     const finalPrograms = programList.filter(p => {
-      // If the channel has genuine schedule data, discard dummy entries
       if (channelHasRealPrograms.has(p.chId) && p.isPlaceholder) {
         return false;
       }
       return true;
     });
 
-    // 4. Construct XMLTV
+    // Build XMLTV
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
     channelMap.forEach((name, id) => {
@@ -132,7 +126,7 @@ async function generateEPG() {
     xml += `</tv>`;
 
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} programs across ${page - 1} pages.`);
+    console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} programs.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
