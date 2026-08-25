@@ -5,6 +5,7 @@ async function generateEPG() {
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
   
+  // Exact range from 12:00 AM Manila Time (today) to 4 days ahead
   const startUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
   const endUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate() + 4, 23, 59, 59) - manilaOffset);
 
@@ -50,22 +51,30 @@ async function generateEPG() {
   };
 
   allChannels.forEach(chItem => {
-    let chId = chItem.cs || (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.cs);
-    const exId = (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.ex_id) || chItem.ex_id;
-    const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || chId;
+    // Collect all valid IDs present on the channel object
+    const idSet = new Set();
 
-    if (!chId) return;
+    if (chItem.cs) idSet.add(chItem.cs);
+    if (chItem.ex_id) idSet.add(chItem.ex_id);
 
-    // Normalize IDs so they match your playlist tvg-id values
-    const targetIds = [chId];
-    if (exId && exId !== chId) targetIds.push(exId);
-    if (chId === 'nba-tv-philippines' || exId === 'nba-tv-philippines') targetIds.push('cgnl_nba');
-    if (chId.includes('onesportsplus') || (exId && exId.includes('onesportsplus'))) {
-      targetIds.push('cg_onesportsplus_hd1', 'onesportsplus_hd', 'onesportsplus');
+    const firstAir = chItem.airing && chItem.airing[0];
+    if (firstAir && firstAir.ch) {
+      if (firstAir.ch.cs) idSet.add(firstAir.ch.cs);
+      if (firstAir.ch.ex_id) idSet.add(firstAir.ch.ex_id);
+      if (firstAir.ch.acs) idSet.add(firstAir.ch.acs);
     }
 
-    targetIds.forEach(id => {
-      if (!channelMap.has(id)) {
+    if (firstAir && Array.isArray(firstAir.ep)) {
+      firstAir.ep.forEach(e => {
+        if (e && e.id) idSet.add(e.id);
+      });
+    }
+
+    const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || Array.from(idSet)[0] || "Unknown Channel";
+
+    // Register all discovered IDs in the channel header list
+    idSet.forEach(id => {
+      if (id && !channelMap.has(id)) {
         channelMap.set(id, chName);
       }
     });
@@ -85,8 +94,10 @@ async function generateEPG() {
         if (startTime && endTime) {
           const isPlaceholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || title.trim() === 'To Be Announced';
 
-          targetIds.forEach(targetId => {
+          // Emit program entries across all detected ID variants
+          idSet.forEach(targetId => {
             const slotKey = `${targetId}_${startTime}`;
+            
             if (!programMap.has(slotKey)) {
               programMap.set(slotKey, {
                 chId: targetId,
@@ -135,7 +146,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Generated cignal.xml for ${channelMap.size} channels.`);
+  console.log(`Success: Exported ${channelMap.size} channel IDs and ${finalPrograms.length} scheduled programs.`);
 }
 
 function escapeXml(unsafe) {
