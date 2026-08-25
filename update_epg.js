@@ -4,23 +4,21 @@ async function generateEPG() {
   const now = new Date();
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
-
-  // Exact UTC start (12:00 AM Manila Time today) and end (+4 days)
+  
   const startUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
   const endUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate() + 4, 23, 59, 59) - manilaOffset);
 
-  const start = startManilaString(startUtc);
-  const end = startManilaString(endUtc);
+  const start = startUtc.toISOString().split('.')[0] + 'Z';
+  const end = endUtc.toISOString().split('.')[0] + 'Z';
 
   console.log(`Fetching schedule from ${start} to ${end}...`);
 
   let allChannels = [];
   let page = 1;
 
-  // Paginate through all pages (captures Page 2+ channels like One Sports Plus HD)
   while (page <= 10) {
     const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
-
+    
     try {
       const res = await fetch(url, {
         headers: {
@@ -29,34 +27,20 @@ async function generateEPG() {
         }
       });
 
-      if (!res.ok) {
-        console.log(`Page ${page} returned HTTP ${res.status}. Stopping pagination.`);
-        break;
-      }
+      if (!res.ok) break;
 
       const json = await res.json();
       const pageData = json.data || [];
-
-      if (!Array.isArray(pageData) || pageData.length === 0) {
-        break;
-      }
+      if (!Array.isArray(pageData) || pageData.length === 0) break;
 
       allChannels = allChannels.concat(pageData);
-      console.log(`Page ${page}: Retrieved ${pageData.length} channel blocks.`);
       page++;
     } catch (err) {
-      console.error(`Page ${page} error: ${err.message}`);
       break;
     }
   }
 
-  if (allChannels.length === 0) {
-    console.error("Error: No channel data retrieved.");
-    process.exit(1);
-  }
-
   const channelMap = new Map();
-  // Keyed by `${chId}_${startTime}` to handle duplicate channel objects
   const programMap = new Map();
 
   const formatXmlTime = (dateStr) => {
@@ -66,55 +50,66 @@ async function generateEPG() {
   };
 
   allChannels.forEach(chItem => {
-    const chId = chItem.cs || (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.cs);
+    let chId = chItem.cs || (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.cs);
+    const exId = (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.ex_id) || chItem.ex_id;
     const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || chId;
 
     if (!chId) return;
 
-    if (!channelMap.has(chId) || (chName && chName !== chId)) {
-      channelMap.set(chId, chName);
+    // Normalize IDs so they match your playlist tvg-id values
+    const targetIds = [chId];
+    if (exId && exId !== chId) targetIds.push(exId);
+    if (chId === 'nba-tv-philippines' || exId === 'nba-tv-philippines') targetIds.push('cgnl_nba');
+    if (chId.includes('onesportsplus') || (exId && exId.includes('onesportsplus'))) {
+      targetIds.push('cg_onesportsplus_hd1', 'onesportsplus_hd', 'onesportsplus');
     }
+
+    targetIds.forEach(id => {
+      if (!channelMap.has(id)) {
+        channelMap.set(id, chName);
+      }
+    });
 
     if (Array.isArray(chItem.airing)) {
       chItem.airing.forEach(air => {
-        let title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) ||
-                    (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
+        let title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) || 
+                    (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) || 
                     "To Be Announced";
 
-        let desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
+        let desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) || 
                    (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) || "";
 
         const startTime = air.sc_st_dt;
         const endTime = air.sc_ed_dt;
 
         if (startTime && endTime) {
-          const isPlaceholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || title === 'To Be Announced';
-          const slotKey = `${chId}_${startTime}`;
+          const isPlaceholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || title.trim() === 'To Be Announced';
 
-          // If slot does not exist, insert it
-          // If slot already has a placeholder and current item is regular, overwrite it
-          if (!programMap.has(slotKey)) {
-            programMap.set(slotKey, {
-              chId,
-              title,
-              desc,
-              start: formatXmlTime(startTime),
-              stop: formatXmlTime(endTime),
-              isPlaceholder
-            });
-          } else {
-            const existing = programMap.get(slotKey);
-            if (existing.isPlaceholder && !isPlaceholder) {
+          targetIds.forEach(targetId => {
+            const slotKey = `${targetId}_${startTime}`;
+            if (!programMap.has(slotKey)) {
               programMap.set(slotKey, {
-                chId,
+                chId: targetId,
                 title,
                 desc,
                 start: formatXmlTime(startTime),
                 stop: formatXmlTime(endTime),
                 isPlaceholder
               });
+            } else {
+              const existing = programMap.get(slotKey);
+              if (existing.isPlaceholder && !isPlaceholder) {
+                programMap.set(slotKey, {
+                  chId: targetId,
+                  title,
+                  desc,
+                  start: formatXmlTime(startTime),
+                  stop: formatXmlTime(endTime),
+                  isPlaceholder
+                });
+              }
             }
-          }
+          });
         }
       });
     }
@@ -122,7 +117,6 @@ async function generateEPG() {
 
   const finalPrograms = Array.from(programMap.values());
 
-  // Generate XMLTV
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
   channelMap.forEach((name, id) => {
@@ -141,11 +135,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} programs.`);
-}
-
-function startManilaString(d) {
-  return d.toISOString().split('.')[0] + 'Z';
+  console.log(`Success: Generated cignal.xml for ${channelMap.size} channels.`);
 }
 
 function escapeXml(unsafe) {
