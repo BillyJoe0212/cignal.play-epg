@@ -11,31 +11,45 @@ async function generateEPG() {
   const tomorrowObj = new Date(now.getTime() + (24 * 60 * 60 * 1000));
   const tomorrowStr = formatter.format(tomorrowObj);
 
-  // UTC query bounds covering today and tomorrow in Manila time
+  // UTC query bounds covering today and tomorrow
   const start = `${todayStr}T00:00:00Z`;
   const end = `${tomorrowStr}T23:59:59Z`;
 
   console.log(`Fetching schedule between ${start} and ${end}...`);
 
-  const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=1&pageSize=100`;
+  let allChannels = [];
+  let page = 1;
 
+  // 1. Loop through all pages to fetch every single channel in Cignal's catalog
   try {
-    const res = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json'
-      }
-    });
+    while (page <= 10) {
+      const url = `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${start}&end=${end}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${page}&pageSize=100`;
+      
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json'
+        }
+      });
 
-    if (!res.ok) {
-      throw new Error(`API returned HTTP ${res.status}`);
+      if (!res.ok) {
+        console.log(`Page ${page} returned HTTP ${res.status}, stopping pagination.`);
+        break;
+      }
+
+      const json = await res.json();
+      const pageData = json.data || [];
+
+      if (!Array.isArray(pageData) || pageData.length === 0) {
+        break;
+      }
+
+      allChannels = allChannels.concat(pageData);
+      page++;
     }
 
-    const json = await res.json();
-    const channels = json.data || [];
-
-    if (!Array.isArray(channels) || channels.length === 0) {
-      throw new Error("No channel entries found in API response.");
+    if (allChannels.length === 0) {
+      throw new Error("No channel entries found across API pages.");
     }
 
     const channelMap = new Map();
@@ -47,24 +61,19 @@ async function generateEPG() {
       return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
     };
 
-    channels.forEach(chItem => {
+    // 2. Process all channels
+    allChannels.forEach(chItem => {
       const chId = chItem.cs || (chItem.airing && chItem.airing[0] && chItem.airing[0].ch && chItem.airing[0].ch.cs);
       const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || chId;
 
       if (!chId) return;
 
-      // Register unique channel names
       if (!channelMap.has(chId) || (chName && chName !== chId)) {
         channelMap.set(chId, chName);
       }
 
       if (Array.isArray(chItem.airing)) {
         chItem.airing.forEach(air => {
-          // CRITICAL: Skip dummy/placeholder items returned by Cignal
-          if (air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced') {
-            return;
-          }
-
           const title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) || 
                         (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) || 
                         "Regular Programming";
@@ -80,22 +89,38 @@ async function generateEPG() {
               title,
               desc,
               start: formatXmlTime(startTime),
-              stop: formatXmlTime(endTime)
+              stop: formatXmlTime(endTime),
+              isPlaceholder: air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced'
             });
           }
         });
       }
     });
 
+    // 3. Deduplicate: if a channel has real programs, remove duplicate placeholder entries
+    const channelHasRealPrograms = new Set();
+    programList.forEach(p => {
+      if (!p.isPlaceholder) {
+        channelHasRealPrograms.add(p.chId);
+      }
+    });
+
+    const finalPrograms = programList.filter(p => {
+      // If the channel has genuine schedule data, discard dummy entries
+      if (channelHasRealPrograms.has(p.chId) && p.isPlaceholder) {
+        return false;
+      }
+      return true;
+    });
+
+    // 4. Construct XMLTV
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
-    // 1. Write all channel blocks first
     channelMap.forEach((name, id) => {
       xml += `  <channel id="${escapeXml(id)}">\n    <display-name>${escapeXml(name)}</display-name>\n  </channel>\n`;
     });
 
-    // 2. Write all programme blocks
-    programList.forEach(p => {
+    finalPrograms.forEach(p => {
       xml += `  <programme start="${p.start}" stop="${p.stop}" channel="${escapeXml(p.chId)}">\n`;
       xml += `    <title lang="en">${escapeXml(p.title)}</title>\n`;
       if (p.desc && p.desc.trim() !== "" && p.desc !== p.title) {
@@ -107,7 +132,7 @@ async function generateEPG() {
     xml += `</tv>`;
 
     fs.writeFileSync('cignal.xml', xml, 'utf-8');
-    console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${programList.length} valid programs.`);
+    console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} programs across ${page - 1} pages.`);
   } catch (err) {
     console.error("Error generating EPG:", err.message);
     process.exit(1);
