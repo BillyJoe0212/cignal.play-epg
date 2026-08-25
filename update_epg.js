@@ -3,7 +3,7 @@ const fs = require('fs');
 async function generateEPG() {
   const now = new Date();
   
-  // Format Today and Tomorrow in Manila local time bounds
+  // Format Today and Tomorrow in Manila local time bounds (YYYY-MM-DD)
   const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
   const formatter = new Intl.DateTimeFormat('en-CA', options);
   
