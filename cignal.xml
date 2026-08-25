@@ -126,9 +126,6 @@
   <channel id="onesportsplus_hd">
     <display-name>cg_onesportsplus_hd1</display-name>
   </channel>
-  <channel id="onesportsplus">
-    <display-name>cg_onesportsplus_hd1</display-name>
-  </channel>
   <channel id="dr_spotv2hd">
     <display-name>dr_spotv2hd</display-name>
   </channel>
@@ -4264,19 +4261,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260824160000 +0000" stop="20260824170000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260824170000 +0000" stop="20260824180000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260824170000 +0000" stop="20260824180000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260824170000 +0000" stop="20260824180000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4288,19 +4277,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260824180000 +0000" stop="20260824190000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260824190000 +0000" stop="20260824200000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260824190000 +0000" stop="20260824200000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260824190000 +0000" stop="20260824200000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4312,19 +4293,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260824200000 +0000" stop="20260824210000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260824210000 +0000" stop="20260824220000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260824210000 +0000" stop="20260824220000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260824210000 +0000" stop="20260824220000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4336,19 +4309,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260824220000 +0000" stop="20260824230000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260824230000 +0000" stop="20260825000000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260824230000 +0000" stop="20260825000000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260824230000 +0000" stop="20260825000000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4360,19 +4325,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825000000 +0000" stop="20260825010000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825010000 +0000" stop="20260825020000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825010000 +0000" stop="20260825020000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825010000 +0000" stop="20260825020000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4384,19 +4341,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825020000 +0000" stop="20260825030000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825030000 +0000" stop="20260825040000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825030000 +0000" stop="20260825040000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825030000 +0000" stop="20260825040000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4408,19 +4357,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825040000 +0000" stop="20260825050000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825050000 +0000" stop="20260825060000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825050000 +0000" stop="20260825060000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825050000 +0000" stop="20260825060000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4432,19 +4373,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825060000 +0000" stop="20260825070000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825070000 +0000" stop="20260825080000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825070000 +0000" stop="20260825080000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825070000 +0000" stop="20260825080000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4456,19 +4389,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825080000 +0000" stop="20260825090000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825090000 +0000" stop="20260825100000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825090000 +0000" stop="20260825100000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825090000 +0000" stop="20260825100000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4480,19 +4405,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825100000 +0000" stop="20260825110000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825110000 +0000" stop="20260825120000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825110000 +0000" stop="20260825120000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825110000 +0000" stop="20260825120000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4504,19 +4421,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825120000 +0000" stop="20260825130000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825130000 +0000" stop="20260825140000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825130000 +0000" stop="20260825140000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825130000 +0000" stop="20260825140000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
@@ -4528,19 +4437,11 @@
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
-  <programme start="20260825140000 +0000" stop="20260825150000 +0000" channel="onesportsplus">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
   <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="cg_onesportsplus_hd1">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
   <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="onesportsplus_hd">
-    <title lang="en">To Be Announced</title>
-    <desc lang="en">Program information is not yet available</desc>
-  </programme>
-  <programme start="20260825150000 +0000" stop="20260825160000 +0000" channel="onesportsplus">
     <title lang="en">To Be Announced</title>
     <desc lang="en">Program information is not yet available</desc>
   </programme>
