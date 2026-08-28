@@ -1,5 +1,8 @@
 const fs = require('fs');
 
+// Utility delay function to avoid rate-limiting
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function generateEPG() {
   const now = new Date();
   const manilaOffset = 8 * 60 * 60 * 1000;
@@ -8,7 +11,7 @@ async function generateEPG() {
   // Anchor to 12:00 AM Manila Time today
   const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
 
-  const DAYS_TO_FETCH = 6;
+  const DAYS_TO_FETCH = 5;
   let rawChannelEntries = [];
 
   for (let d = 0; d < DAYS_TO_FETCH; d++) {
@@ -18,17 +21,17 @@ async function generateEPG() {
     const startStr = chunkStartUtc.toISOString().split('.')[0] + 'Z';
     const endStr = chunkEndUtc.toISOString().split('.')[0] + 'Z';
 
-    console.log(`Processing Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr})...`);
+    console.log(`\n--- Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
 
     const endpoints = [
-      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=150`,
-      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=150`,
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=150`
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
     ];
 
     for (const getUrl of endpoints) {
       let page = 1;
-      while (page <= 20) {
+      while (page <= 10) {
         try {
           const res = await fetch(getUrl(page), {
             headers: {
@@ -39,19 +42,30 @@ async function generateEPG() {
             }
           });
 
-          if (!res.ok) break;
+          if (!res.ok) {
+            console.log(`Request returned HTTP ${res.status}, moving to next.`);
+            break;
+          }
 
           const json = await res.json();
           const pageData = json.data || [];
           if (!Array.isArray(pageData) || pageData.length === 0) break;
 
           rawChannelEntries = rawChannelEntries.concat(pageData);
+          console.log(`Retrieved ${pageData.length} entries (Page ${page})`);
           page++;
+          await sleep(150); // Small cooldown
         } catch (err) {
+          console.error(`Fetch error: ${err.message}`);
           break;
         }
       }
     }
+  }
+
+  if (rawChannelEntries.length === 0) {
+    console.error("FATAL: 0 entries retrieved from APIs. Aborting to avoid wiping cignal.xml.");
+    process.exit(1);
   }
 
   const channelMap = new Map();
@@ -156,6 +170,11 @@ async function generateEPG() {
     finalPrograms.push(...resolved);
   });
 
+  if (finalPrograms.length === 0) {
+    console.error("FATAL: 0 programs resolved. Aborting.");
+    process.exit(1);
+  }
+
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
   channelMap.forEach((name, id) => {
@@ -174,7 +193,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} total programs.`);
+  console.log(`\nSUCCESS: Wrote ${channelMap.size} channels and ${finalPrograms.length} programs to cignal.xml.`);
 }
 
 function escapeXml(unsafe) {
