@@ -18,17 +18,17 @@ async function generateEPG() {
     const startStr = chunkStartUtc.toISOString().split('.')[0] + 'Z';
     const endStr = chunkEndUtc.toISOString().split('.')[0] + 'Z';
 
-    console.log(`Querying Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr})...`);
+    console.log(`Processing Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr})...`);
 
     const endpoints = [
-      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=150`,
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=150`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=150`
     ];
 
     for (const getUrl of endpoints) {
       let page = 1;
-      while (page <= 10) {
+      while (page <= 20) {
         try {
           const res = await fetch(getUrl(page), {
             headers: {
@@ -174,7 +174,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Exported ${channelMap.size} channels with ${finalPrograms.length} total programs.`);
+  console.log(`Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} total programs.`);
 }
 
 function escapeXml(unsafe) {
