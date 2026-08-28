@@ -8,7 +8,7 @@ async function generateEPG() {
   // Set anchor: Today at 00:00 Manila Time
   const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
 
-  const DAYS_TO_FETCH = 6; // Fetch 6 full days ahead
+  const DAYS_TO_FETCH = 6;
   let rawChannelEntries = [];
 
   for (let d = 0; d < DAYS_TO_FETCH; d++) {
@@ -26,9 +26,9 @@ async function generateEPG() {
       (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
     ];
 
+    // Fetch from ALL endpoints for each day (do not break early)
     for (const getUrl of endpoints) {
       let page = 1;
-      let dayCount = 0;
       while (page <= 10) {
         try {
           const res = await fetch(getUrl(page), {
@@ -47,13 +47,11 @@ async function generateEPG() {
           if (!Array.isArray(pageData) || pageData.length === 0) break;
 
           rawChannelEntries = rawChannelEntries.concat(pageData);
-          dayCount += pageData.length;
           page++;
         } catch (err) {
           break;
         }
       }
-      if (dayCount > 0) break; // Successfully got schedule for this day
     }
   }
 
@@ -147,6 +145,7 @@ async function generateEPG() {
     const seenTimes = new Set();
 
     programs.forEach(prog => {
+      // If program is a placeholder, drop it if a genuine schedule covers this time
       if (prog.isPlaceholder) {
         const hasOverlapWithReal = realIntervals.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
@@ -182,7 +181,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Generated cignal.xml for ${channelMap.size} channels with ${finalPrograms.length} programs across ${DAYS_TO_FETCH} days.`);
+  console.log(`Success: Generated cignal.xml for ${channelMap.size} channels with ${finalPrograms.length} programs.`);
 }
 
 function escapeXml(unsafe) {
