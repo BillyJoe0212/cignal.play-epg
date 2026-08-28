@@ -5,7 +5,7 @@ async function generateEPG() {
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
 
-  // Set anchor: Today at 00:00 Manila Time
+  // Anchor to 12:00 AM Manila Time today
   const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
 
   const DAYS_TO_FETCH = 6;
@@ -18,7 +18,7 @@ async function generateEPG() {
     const startStr = chunkStartUtc.toISOString().split('.')[0] + 'Z';
     const endStr = chunkEndUtc.toISOString().split('.')[0] + 'Z';
 
-    console.log(`Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} to ${endStr})...`);
+    console.log(`Querying Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr})...`);
 
     const endpoints = [
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
@@ -26,7 +26,6 @@ async function generateEPG() {
       (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
     ];
 
-    // Fetch from ALL endpoints for each day (do not break early)
     for (const getUrl of endpoints) {
       let page = 1;
       while (page <= 10) {
@@ -53,11 +52,6 @@ async function generateEPG() {
         }
       }
     }
-  }
-
-  if (rawChannelEntries.length === 0) {
-    console.error("Error: Could not retrieve data from any API.");
-    process.exit(1);
   }
 
   const channelMap = new Map();
@@ -145,7 +139,6 @@ async function generateEPG() {
     const seenTimes = new Set();
 
     programs.forEach(prog => {
-      // If program is a placeholder, drop it if a genuine schedule covers this time
       if (prog.isPlaceholder) {
         const hasOverlapWithReal = realIntervals.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
@@ -181,7 +174,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Generated cignal.xml for ${channelMap.size} channels with ${finalPrograms.length} programs.`);
+  console.log(`Exported ${channelMap.size} channels with ${finalPrograms.length} total programs.`);
 }
 
 function escapeXml(unsafe) {
