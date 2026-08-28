@@ -5,61 +5,56 @@ async function generateEPG() {
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
 
-  // Time window: 12:00 AM Manila Time today up to 4 days ahead
-  const startUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
-  const endUtc = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate() + 4, 23, 59, 59) - manilaOffset);
+  // Set anchor: Today at 00:00 Manila Time
+  const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
 
-  const start = startUtc.toISOString().split('.')[0] + 'Z';
-  const end = endUtc.toISOString().split('.')[0] + 'Z';
-
-  console.log(`Generating EPG from ${start} to ${end}...`);
-
-  // Endpoints in order of data quality (Primary: Quickplay live console)
-  const endpointConfigs = [
-    {
-      name: 'Quickplay PLive Console',
-      url: (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`
-    },
-    {
-      name: 'Quickplay Web Catalog',
-      url: (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
-    },
-    {
-      name: 'FirstLight Catalog',
-      url: (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
-    }
-  ];
-
+  const DAYS_TO_FETCH = 6; // Fetch 6 full days ahead
   let rawChannelEntries = [];
 
-  for (const ep of endpointConfigs) {
-    let page = 1;
-    let fetched = 0;
-    while (page <= 10) {
-      try {
-        const res = await fetch(ep.url(page), {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
-            'Origin': 'https://cignalplay.com',
-            'Referer': 'https://cignalplay.com/'
-          }
-        });
+  for (let d = 0; d < DAYS_TO_FETCH; d++) {
+    const chunkStartUtc = new Date(startDay.getTime() + d * 24 * 60 * 60 * 1000);
+    const chunkEndUtc = new Date(startDay.getTime() + (d + 1) * 24 * 60 * 60 * 1000);
 
-        if (!res.ok) break;
+    const startStr = chunkStartUtc.toISOString().split('.')[0] + 'Z';
+    const endStr = chunkEndUtc.toISOString().split('.')[0] + 'Z';
 
-        const json = await res.json();
-        const pageData = json.data || [];
-        if (!Array.isArray(pageData) || pageData.length === 0) break;
+    console.log(`Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} to ${endStr})...`);
 
-        rawChannelEntries = rawChannelEntries.concat(pageData);
-        fetched += pageData.length;
-        page++;
-      } catch (err) {
-        break;
+    const endpoints = [
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
+    ];
+
+    for (const getUrl of endpoints) {
+      let page = 1;
+      let dayCount = 0;
+      while (page <= 10) {
+        try {
+          const res = await fetch(getUrl(page), {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+              'Accept': 'application/json, text/plain, */*',
+              'Origin': 'https://cignalplay.com',
+              'Referer': 'https://cignalplay.com/'
+            }
+          });
+
+          if (!res.ok) break;
+
+          const json = await res.json();
+          const pageData = json.data || [];
+          if (!Array.isArray(pageData) || pageData.length === 0) break;
+
+          rawChannelEntries = rawChannelEntries.concat(pageData);
+          dayCount += pageData.length;
+          page++;
+        } catch (err) {
+          break;
+        }
       }
+      if (dayCount > 0) break; // Successfully got schedule for this day
     }
-    console.log(`-> ${ep.name}: fetched ${fetched} channel blocks`);
   }
 
   if (rawChannelEntries.length === 0) {
@@ -68,7 +63,6 @@ async function generateEPG() {
   }
 
   const channelMap = new Map();
-  // Map keyed by targetId -> Array of program slots
   const channelPrograms = new Map();
 
   const formatXmlTime = (dateStr) => {
@@ -141,29 +135,23 @@ async function generateEPG() {
     }
   });
 
-  // Resolve overlapping intervals and strip placeholders where real programs exist
   const finalPrograms = [];
 
   channelPrograms.forEach((programs, chId) => {
     if (programs.length === 0) return;
 
     const realIntervals = programs.filter(p => !p.isPlaceholder);
-    
-    // Sort chronologically
     programs.sort((a, b) => a.startEpoch - b.startEpoch);
 
     const resolved = [];
     const seenTimes = new Set();
 
     programs.forEach(prog => {
-      // If this program is a placeholder, check if any real program overlaps this time slot
       if (prog.isPlaceholder) {
-        const hasOverlapWithReal = realIntervals.some(r => 
+        const hasOverlapWithReal = realIntervals.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
         );
-        if (hasOverlapWithReal) {
-          return; // Drop placeholder completely
-        }
+        if (hasOverlapWithReal) return;
       }
 
       const dedupeKey = `${prog.start}_${prog.stop}`;
@@ -176,7 +164,6 @@ async function generateEPG() {
     finalPrograms.push(...resolved);
   });
 
-  // Build XMLTV
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tv generator-info-name="GitHub Action Converter">\n`;
 
   channelMap.forEach((name, id) => {
@@ -195,7 +182,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`Success: Generated cignal.xml with ${channelMap.size} channels and ${finalPrograms.length} resolved programs.`);
+  console.log(`Success: Generated cignal.xml for ${channelMap.size} channels with ${finalPrograms.length} programs across ${DAYS_TO_FETCH} days.`);
 }
 
 function escapeXml(unsafe) {
