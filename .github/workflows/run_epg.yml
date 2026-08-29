@@ -2,7 +2,8 @@ name: Update Daily EPG
 
 on:
   schedule:
-    - cron: '0 16 * * *' # Runs daily at 12:00 AM Manila Time
+    # Runs every 12 hours: 16:00 UTC (12:00 AM Manila) & 04:00 UTC (12:00 PM Manila)
+    - cron: '0 4,16 * * *'
   workflow_dispatch:
 
 permissions:
@@ -28,5 +29,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add cignal.xml
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update cignal.xml [skip ci]"
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update cignal.xml [skip ci]" && git push)
