@@ -2,7 +2,7 @@ name: Update Daily EPG
 
 on:
   schedule:
-    # Runs every 12 hours: 16:00 UTC (12:00 AM Manila) & 04:00 UTC (12:00 PM Manila)
+    # Runs every 12 hours: 04:00 UTC (12:00 PM Manila) & 16:00 UTC (12:00 AM Manila)
     - cron: '0 4,16 * * *'
   workflow_dispatch:
 
