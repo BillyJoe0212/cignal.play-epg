@@ -3,7 +3,7 @@ name: Update Daily EPG
 on:
   schedule:
     # 04:17 UTC (12:17 PM Manila) & 16:17 UTC (12:17 AM Manila)
-    - cron: '17 4,16 * * *'
+    - cron: '17 3,13 * * *'
   workflow_dispatch:
 
 permissions:
