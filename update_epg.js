@@ -28,16 +28,16 @@ async function generateEPG() {
     console.log(`\n--- Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
 
     const endpoints = [
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`
     ];
 
     for (const getUrl of endpoints) {
       let page = 1;
-      while (page <= 15) {
+      while (page <= 20) {
         try {
           const res = await fetch(getUrl(page), {
             headers: {
@@ -56,7 +56,7 @@ async function generateEPG() {
 
           rawChannelEntries = rawChannelEntries.concat(pageData);
           page++;
-          await sleep(100);
+          await sleep(80);
         } catch (err) {
           break;
         }
@@ -65,7 +65,7 @@ async function generateEPG() {
   }
 
   if (rawChannelEntries.length === 0) {
-    console.error("FATAL: 0 entries retrieved. Aborting to prevent blanking cignal.xml.");
+    console.error("FATAL: 0 entries retrieved from APIs. Aborting to protect existing cignal.xml.");
     process.exit(1);
   }
 
@@ -78,11 +78,9 @@ async function generateEPG() {
     return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
   };
 
-  const isTBA = (title, desc) => {
+  const isGenericTBA = (title) => {
     const t = (title || '').trim().toLowerCase();
-    const d = (desc || '').trim().toLowerCase();
-    const tbaList = ['to be announced', 'tba', 'placeholder', 'no information', 'sign off', 'sign-off'];
-    return tbaList.includes(t) || t === '' || (tbaList.includes(d) && t === '');
+    return t === 'to be announced' || t === 'tba' || t === 'placeholder' || t === '';
   };
 
   rawChannelEntries.forEach(chItem => {
@@ -110,11 +108,12 @@ async function generateEPG() {
                    (firstAir && firstAir.ch && firstAir.ch.lon && firstAir.ch.lon[0] && firstAir.ch.lon[0].n) ||
                    Array.from(idSet)[0] || "Unknown Channel";
 
-    // Auto-generate normalized name aliases (e.g. "Cartoon Network HD", "cartoonnetworkhd")
+    // Auto-generate aliases for wide playlist compatibility
     if (chName && chName !== "Unknown Channel") {
       idSet.add(chName);
       idSet.add(normalizeId(chName));
       idSet.add(chName.replace(/\s+/g, '_'));
+      idSet.add(chName.replace(/\s+/g, '-'));
     }
 
     idSet.forEach(id => {
@@ -133,11 +132,13 @@ async function generateEPG() {
         let title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) ||
                     (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
                     (air.lon && air.lon[0] && air.lon[0].n) ||
+                    (air.lod && air.lod[0] && air.lod[0].n) ||
                     "To Be Announced";
 
         let desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
                    (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) ||
-                   (air.lod && air.lod[0] && air.lod[0].n) || "";
+                   (air.lod && air.lod[0] && air.lod[0].n) ||
+                   (air.lon && air.lon[0] && air.lon[0].n) || "";
 
         const startTime = air.sc_st_dt;
         const endTime = air.sc_ed_dt;
@@ -145,12 +146,12 @@ async function generateEPG() {
         if (startTime && endTime) {
           const startEpoch = new Date(startTime).getTime();
           const endEpoch = new Date(endTime).getTime();
-          const placeholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || isTBA(title, desc);
+          const placeholder = isGenericTBA(title);
 
           idSet.forEach(targetId => {
             channelPrograms.get(targetId).push({
               chId: targetId,
-              title: title.trim(),
+              title: title.trim() || "To Be Announced",
               desc: desc.trim(),
               start: formatXmlTime(startTime),
               stop: formatXmlTime(endTime),
@@ -169,6 +170,7 @@ async function generateEPG() {
   channelPrograms.forEach((programs, chId) => {
     if (programs.length === 0) return;
 
+    // Separate genuine named titles from TBA cards
     const realPrograms = programs.filter(p => !p.isPlaceholder);
     programs.sort((a, b) => a.startEpoch - b.startEpoch);
 
@@ -176,11 +178,12 @@ async function generateEPG() {
     const seenTimes = new Set();
 
     programs.forEach(prog => {
+      // If this is a TBA card, only drop it IF a named title is already scheduled for this slot
       if (prog.isPlaceholder) {
-        const overlapsReal = realPrograms.some(r =>
+        const hasSpecificTitleOverlap = realPrograms.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
         );
-        if (overlapsReal) return;
+        if (hasSpecificTitleOverlap) return;
       }
 
       const dedupeKey = `${prog.start}_${prog.stop}_${prog.title}`;
