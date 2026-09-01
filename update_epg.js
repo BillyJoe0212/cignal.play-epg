@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-// Utility delay function to avoid rate-limiting
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function generateEPG() {
@@ -11,7 +10,7 @@ async function generateEPG() {
   // Anchor to 12:00 AM Manila Time today
   const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
 
-  const DAYS_TO_FETCH = 5;
+  const DAYS_TO_FETCH = 6;
   let rawChannelEntries = [];
 
   for (let d = 0; d < DAYS_TO_FETCH; d++) {
@@ -21,7 +20,7 @@ async function generateEPG() {
     const startStr = chunkStartUtc.toISOString().split('.')[0] + 'Z';
     const endStr = chunkEndUtc.toISOString().split('.')[0] + 'Z';
 
-    console.log(`\n--- Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
+    console.log(`\n--- Querying Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
 
     const endpoints = [
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
@@ -31,7 +30,7 @@ async function generateEPG() {
 
     for (const getUrl of endpoints) {
       let page = 1;
-      while (page <= 10) {
+      while (page <= 15) {
         try {
           const res = await fetch(getUrl(page), {
             headers: {
@@ -42,21 +41,16 @@ async function generateEPG() {
             }
           });
 
-          if (!res.ok) {
-            console.log(`Request returned HTTP ${res.status}, moving to next.`);
-            break;
-          }
+          if (!res.ok) break;
 
           const json = await res.json();
           const pageData = json.data || [];
           if (!Array.isArray(pageData) || pageData.length === 0) break;
 
           rawChannelEntries = rawChannelEntries.concat(pageData);
-          console.log(`Retrieved ${pageData.length} entries (Page ${page})`);
           page++;
-          await sleep(150); // Small cooldown
+          await sleep(100);
         } catch (err) {
-          console.error(`Fetch error: ${err.message}`);
           break;
         }
       }
@@ -64,7 +58,7 @@ async function generateEPG() {
   }
 
   if (rawChannelEntries.length === 0) {
-    console.error("FATAL: 0 entries retrieved from APIs. Aborting to avoid wiping cignal.xml.");
+    console.error("FATAL: No data retrieved. Keeping existing cignal.xml untouched.");
     process.exit(1);
   }
 
@@ -77,17 +71,26 @@ async function generateEPG() {
     return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
   };
 
+  const isTBA = (title, desc) => {
+    const t = (title || '').trim().toLowerCase();
+    const d = (desc || '').trim().toLowerCase();
+    const tbaList = ['to be announced', 'tba', 'placeholder', 'no information', 'sign off', 'sign-off'];
+    return tbaList.includes(t) || t === '' || (tbaList.includes(d) && t === '');
+  };
+
   rawChannelEntries.forEach(chItem => {
     const idSet = new Set();
 
     if (chItem.cs) idSet.add(chItem.cs);
     if (chItem.ex_id) idSet.add(chItem.ex_id);
+    if (chItem.id) idSet.add(chItem.id);
 
     const firstAir = chItem.airing && chItem.airing[0];
     if (firstAir && firstAir.ch) {
       if (firstAir.ch.cs) idSet.add(firstAir.ch.cs);
       if (firstAir.ch.ex_id) idSet.add(firstAir.ch.ex_id);
       if (firstAir.ch.acs) idSet.add(firstAir.ch.acs);
+      if (firstAir.ch.id) idSet.add(firstAir.ch.id);
     }
 
     if (firstAir && Array.isArray(firstAir.ep)) {
@@ -96,14 +99,19 @@ async function generateEPG() {
       });
     }
 
-    const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) || Array.from(idSet)[0] || "Unknown Channel";
+    const chName = (chItem.lon && chItem.lon[0] && chItem.lon[0].n) ||
+                   (firstAir && firstAir.ch && firstAir.ch.lon && firstAir.ch.lon[0] && firstAir.ch.lon[0].n) ||
+                   Array.from(idSet)[0] || "Unknown Channel";
 
+    // Register all discovered IDs for this channel
     idSet.forEach(id => {
-      if (id && (!channelMap.has(id) || channelMap.get(id) === id)) {
-        channelMap.set(id, chName);
-      }
-      if (!channelPrograms.has(id)) {
-        channelPrograms.set(id, []);
+      if (id) {
+        if (!channelMap.has(id) || channelMap.get(id) === id) {
+          channelMap.set(id, chName);
+        }
+        if (!channelPrograms.has(id)) {
+          channelPrograms.set(id, []);
+        }
       }
     });
 
@@ -111,10 +119,12 @@ async function generateEPG() {
       chItem.airing.forEach(air => {
         let title = (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) ||
                     (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
+                    (air.lon && air.lon[0] && air.lon[0].n) ||
                     "To Be Announced";
 
         let desc = (air.pgm && air.pgm.lod && air.pgm.lod[0] && air.pgm.lod[0].n) ||
-                   (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) || "";
+                   (air.pgm && air.pgm.lon && air.pgm.lon[0] && air.pgm.lon[0].n) ||
+                   (air.lod && air.lod[0] && air.lod[0].n) || "";
 
         const startTime = air.sc_st_dt;
         const endTime = air.sc_ed_dt;
@@ -122,18 +132,18 @@ async function generateEPG() {
         if (startTime && endTime) {
           const startEpoch = new Date(startTime).getTime();
           const endEpoch = new Date(endTime).getTime();
-          const isPlaceholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || title.trim() === 'To Be Announced' || title.trim() === '';
+          const placeholder = air.sc_chty === 'placeholder' || air.src === 'placeholder' || air.id === 'to-be-announced' || isTBA(title, desc);
 
           idSet.forEach(targetId => {
             channelPrograms.get(targetId).push({
               chId: targetId,
-              title,
-              desc,
+              title: title.trim(),
+              desc: desc.trim(),
               start: formatXmlTime(startTime),
               stop: formatXmlTime(endTime),
               startEpoch,
               endEpoch,
-              isPlaceholder
+              isPlaceholder: placeholder
             });
           });
         }
@@ -146,21 +156,24 @@ async function generateEPG() {
   channelPrograms.forEach((programs, chId) => {
     if (programs.length === 0) return;
 
-    const realIntervals = programs.filter(p => !p.isPlaceholder);
+    // Separate genuine programs from placeholder / TBA cards
+    const realPrograms = programs.filter(p => !p.isPlaceholder);
+
     programs.sort((a, b) => a.startEpoch - b.startEpoch);
 
     const resolved = [];
     const seenTimes = new Set();
 
     programs.forEach(prog => {
+      // If this is a placeholder, discard it if any real program covers or overlaps this slot
       if (prog.isPlaceholder) {
-        const hasOverlapWithReal = realIntervals.some(r =>
+        const overlapsReal = realPrograms.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
         );
-        if (hasOverlapWithReal) return;
+        if (overlapsReal) return;
       }
 
-      const dedupeKey = `${prog.start}_${prog.stop}`;
+      const dedupeKey = `${prog.start}_${prog.stop}_${prog.title}`;
       if (!seenTimes.has(dedupeKey)) {
         seenTimes.add(dedupeKey);
         resolved.push(prog);
@@ -193,7 +206,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`\nSUCCESS: Wrote ${channelMap.size} channels and ${finalPrograms.length} programs to cignal.xml.`);
+  console.log(`\nSUCCESS: Generated cignal.xml with ${channelMap.size} channel IDs and ${finalPrograms.length} total programs.`);
 }
 
 function escapeXml(unsafe) {
