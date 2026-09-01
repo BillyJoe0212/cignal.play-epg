@@ -2,6 +2,11 @@ const fs = require('fs');
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function normalizeId(str) {
+  if (!str) return '';
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
 async function generateEPG() {
   const now = new Date();
   const manilaOffset = 8 * 60 * 60 * 1000;
@@ -20,12 +25,14 @@ async function generateEPG() {
     const startStr = chunkStartUtc.toISOString().split('.')[0] + 'Z';
     const endStr = chunkEndUtc.toISOString().split('.')[0] + 'Z';
 
-    console.log(`\n--- Querying Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
+    console.log(`\n--- Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
 
     const endpoints = [
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`
     ];
 
     for (const getUrl of endpoints) {
@@ -58,7 +65,7 @@ async function generateEPG() {
   }
 
   if (rawChannelEntries.length === 0) {
-    console.error("FATAL: No data retrieved. Keeping existing cignal.xml untouched.");
+    console.error("FATAL: 0 entries retrieved. Aborting to prevent blanking cignal.xml.");
     process.exit(1);
   }
 
@@ -103,7 +110,13 @@ async function generateEPG() {
                    (firstAir && firstAir.ch && firstAir.ch.lon && firstAir.ch.lon[0] && firstAir.ch.lon[0].n) ||
                    Array.from(idSet)[0] || "Unknown Channel";
 
-    // Register all discovered IDs for this channel
+    // Auto-generate normalized name aliases (e.g. "Cartoon Network HD", "cartoonnetworkhd")
+    if (chName && chName !== "Unknown Channel") {
+      idSet.add(chName);
+      idSet.add(normalizeId(chName));
+      idSet.add(chName.replace(/\s+/g, '_'));
+    }
+
     idSet.forEach(id => {
       if (id) {
         if (!channelMap.has(id) || channelMap.get(id) === id) {
@@ -156,16 +169,13 @@ async function generateEPG() {
   channelPrograms.forEach((programs, chId) => {
     if (programs.length === 0) return;
 
-    // Separate genuine programs from placeholder / TBA cards
     const realPrograms = programs.filter(p => !p.isPlaceholder);
-
     programs.sort((a, b) => a.startEpoch - b.startEpoch);
 
     const resolved = [];
     const seenTimes = new Set();
 
     programs.forEach(prog => {
-      // If this is a placeholder, discard it if any real program covers or overlaps this slot
       if (prog.isPlaceholder) {
         const overlapsReal = realPrograms.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
@@ -206,7 +216,7 @@ async function generateEPG() {
   xml += `</tv>`;
 
   fs.writeFileSync('cignal.xml', xml, 'utf-8');
-  console.log(`\nSUCCESS: Generated cignal.xml with ${channelMap.size} channel IDs and ${finalPrograms.length} total programs.`);
+  console.log(`\nSUCCESS: Generated cignal.xml with ${channelMap.size} channel identifiers and ${finalPrograms.length} total programs.`);
 }
 
 function escapeXml(unsafe) {
