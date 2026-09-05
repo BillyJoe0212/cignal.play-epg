@@ -12,8 +12,8 @@ async function generateEPG() {
   const manilaOffset = 8 * 60 * 60 * 1000;
   const manilaNow = new Date(now.getTime() + manilaOffset);
 
-  // Anchor to 12:00 AM Manila Time today
-  const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), 0, 0, 0) - manilaOffset);
+// Anchor to the current hour in Manila Time so it shifts with every 6-hour run
+  const startDay = new Date(Date.UTC(manilaNow.getUTCFullYear(), manilaNow.getUTCMonth(), manilaNow.getUTCDate(), manilaNow.getUTCHours(), 0, 0) - manilaOffset);
 
   const DAYS_TO_FETCH = 6;
   let rawChannelEntries = [];
