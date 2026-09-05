@@ -27,19 +27,23 @@ async function generateEPG() {
 
     console.log(`\n--- Fetching Day ${d + 1}/${DAYS_TO_FETCH} (${startStr} -> ${endStr}) ---`);
 
+    // Ordered with QuickPlay/alternative endpoints first to bypass firstlight upstream outages
     const endpoints = [
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=web&client=pldt-plive-console&pageNumber=${p}&pageSize=100`,
       (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`,
-      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`
+      (p) => `https://data-store-cdn.api.pldtcms.quickplay.com/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-web&pageNumber=${p}&pageSize=100`,
+      (p) => `https://data-store-cdn.api.pldt.firstlight.ai/content/epg?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}&reg=ph&dt=all&client=pldt-cignal-app&pageNumber=${p}&pageSize=100`
     ];
 
     for (const getUrl of endpoints) {
       let page = 1;
-      while (page <= 20) {
+      let endpointFailed = false;
+      
+      while (page <= 20 && !endpointFailed) {
         try {
-          const res = await fetch(getUrl(page), {
+          const targetUrl = getUrl(page);
+          const res = await fetch(targetUrl, {
             headers: {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
               'Accept': 'application/json, text/plain, */*',
@@ -48,7 +52,13 @@ async function generateEPG() {
             }
           });
 
-          if (!res.ok) break;
+          if (!res.ok) {
+            // If we hit gateway errors like 502/503/504 ("no healthy upstream"), break out of this endpoint loop cleanly
+            if (res.status >= 500) {
+              console.log(`Endpoint warning: Server returned ${res.status}. Switching to backup mirror.`);
+            }
+            break;
+          }
 
           const json = await res.json();
           const pageData = json.data || [];
@@ -58,6 +68,7 @@ async function generateEPG() {
           page++;
           await sleep(80);
         } catch (err) {
+          // Network errors or DNS failures won't crash the entire action
           break;
         }
       }
@@ -65,7 +76,7 @@ async function generateEPG() {
   }
 
   if (rawChannelEntries.length === 0) {
-    console.error("FATAL: 0 entries retrieved from APIs. Aborting to protect existing cignal.xml.");
+    console.error("FATAL: All endpoints failed or returned 0 entries. Aborting to protect existing cignal.xml.");
     process.exit(1);
   }
 
@@ -108,7 +119,6 @@ async function generateEPG() {
                    (firstAir && firstAir.ch && firstAir.ch.lon && firstAir.ch.lon[0] && firstAir.ch.lon[0].n) ||
                    Array.from(idSet)[0] || "Unknown Channel";
 
-    // Auto-generate aliases for wide playlist compatibility
     if (chName && chName !== "Unknown Channel") {
       idSet.add(chName);
       idSet.add(normalizeId(chName));
@@ -170,7 +180,6 @@ async function generateEPG() {
   channelPrograms.forEach((programs, chId) => {
     if (programs.length === 0) return;
 
-    // Separate genuine named titles from TBA cards
     const realPrograms = programs.filter(p => !p.isPlaceholder);
     programs.sort((a, b) => a.startEpoch - b.startEpoch);
 
@@ -178,7 +187,6 @@ async function generateEPG() {
     const seenTimes = new Set();
 
     programs.forEach(prog => {
-      // If this is a TBA card, only drop it IF a named title is already scheduled for this slot
       if (prog.isPlaceholder) {
         const hasSpecificTitleOverlap = realPrograms.some(r =>
           (prog.startEpoch < r.endEpoch && prog.endEpoch > r.startEpoch)
