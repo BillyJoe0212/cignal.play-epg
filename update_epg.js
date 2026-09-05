@@ -226,7 +226,8 @@ async function generateEPG() {
 
   xml += `</tv>`;
 
-  fs.writeFileSync('cignal.xml', xml, 'utf-8');
+  const timestampComment = `<!-- Last updated: ${new Date().toISOString()} -->\n`;
+  fs.writeFileSync('cignal.xml', timestampComment + xml, 'utf-8');
   console.log(`\nSUCCESS: Generated cignal.xml with ${channelMap.size} channel identifiers and ${finalPrograms.length} total programs.`);
 }
 
