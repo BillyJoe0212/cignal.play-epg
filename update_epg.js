@@ -93,6 +93,7 @@ async function generateEPG() {
   rawChannelEntries.forEach(chItem => {
     const idSet = new Set();
 
+    // Pull strictly the actual IDs coming from the endpoint payload
     if (chItem.cs) idSet.add(chItem.cs);
     if (chItem.ex_id) idSet.add(chItem.ex_id);
     if (chItem.id) idSet.add(chItem.id);
@@ -115,16 +116,9 @@ async function generateEPG() {
                    (firstAir && firstAir.ch && firstAir.ch.lon && firstAir.ch.lon[0] && firstAir.ch.lon[0].n) ||
                    Array.from(idSet)[0] || "Unknown Channel";
 
-    if (chName && chName !== "Unknown Channel") {
-      idSet.add(chName);
-      idSet.add(normalizeId(chName));
-      idSet.add(chName.replace(/\s+/g, '_'));
-      idSet.add(chName.replace(/\s+/g, '-'));
-    }
-
     idSet.forEach(id => {
       if (id) {
-        if (!channelMap.has(id) || channelMap.get(id) === id) {
+        if (!channelMap.has(id)) {
           channelMap.set(id, chName);
         }
         if (!channelPrograms.has(id)) {
